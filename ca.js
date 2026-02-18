@@ -1,5 +1,5 @@
 // prob.js
-export const probModule = {
+export const caModule = {
     id: 'prob',
     title: 'P, NP, and NP-Complete Problems',
     subtopics: [

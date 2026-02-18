@@ -1,5 +1,5 @@
 // turing.js
-export const turingModule = {
+export const mcaModule = {
     id: 'tm',
     title: 'Turing Machines',
     subtopics: [

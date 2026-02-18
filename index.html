@@ -3,46 +3,48 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Theory of Computations</title>
+  <title>STA3022F - Multivariate Analysis</title>
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- MathJax Configuration -->
   <script>
-window.MathJax = {
-  tex: {
-    inlineMath: [['$', '$'], ['\\(', '\\)']]
-  },
-  startup: { typeset: false } // we will call typeset manually
-};
-</script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      startup: { typeset: false } 
+    };
+  </script>
   
- <!-- load MathJax (cdn)s -->
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+  <!-- load MathJax (cdn) -->
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 
+  <script src="theme.js"></script>
+  <!-- Ensure your script.js is using the updated CURRICULUM object we created -->
+  <script type="module" src="script.js"></script>
 
-<script src="theme.js"></script>
-<script type="module" src="script.js"></script>
-
-   <link rel="stylesheet" href="style.css">
-  
+  <link rel="stylesheet" href="style.css">
 </head>
-<body class="antialiased selection:bg-red-500 selection:text-white">
+
+<body class="antialiased selection:bg-indigo-500 selection:text-white">
 
   <!-- HEADER -->
   <header class="max-w-7xl mx-auto p-4 md:p-6">
     <div class="glass rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4">
       <div>
-        <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">Theory of Computations</h1>
-        <p class="text-sm opacity-80 mt-1">Assisting in content of Theory of Computations</p>
+        <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">STA3022F: Multivariate Analysis</h1>
+        <p class="text-sm opacity-80 mt-1">Note Repository & Statistical Method Guide</p>
       </div>
       
+      <!-- Theme Selector -->
       <div class="flex flex-wrap items-center justify-center gap-3">
-  <div class="flex items-center gap-2 bg-black/20 rounded-lg p-1 pr-3">
-    <span id="theme-chip" class="w-4 h-4 rounded-full bg-red-500 ml-2"></span>
-    <select id="theme-dropdown" class="bg-transparent text-sm border-none outline-none text-white/90 cursor-pointer">
-      <option value="cat-noir">Cat Noir</option>
+        <div class="flex items-center gap-2 bg-black/20 rounded-lg p-1 pr-3">
+          <span id="theme-chip" class="w-4 h-4 rounded-full bg-indigo-500 ml-2"></span>
+          <select id="theme-dropdown" class="bg-transparent text-sm border-none outline-none text-white/90 cursor-pointer">
+            <option value="dark-blue-indigo">Dark Blue & Indigo</option>
+                  <option value="cat-noir">Cat Noir</option>
       <option value="blood-red">Blood Red</option>
       <option value="sapphire-steel">Sapphire & Steel</option>
       <option value="emerald-charcoal">Emerald & Charcoal</option>
@@ -68,11 +70,10 @@ window.MathJax = {
 <option value="dark-blue-teal">Dark Blue & Teal</option>
 <option value="dark-blue-indigo">Dark Blue & Indigo</option>
 <option value="dark-emerald-blue">Dark Emerald-Blue Hybrid</option>
-
-    </select>
-  </div>
-</div>
-
+            
+          </select>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -82,53 +83,79 @@ window.MathJax = {
     <!-- LEFT SIDEBAR: NAVIGATION -->
     <aside class="glass p-5 rounded-xl h-fit">
       <div class="flex items-center justify-between">
-        <h2 class="text-lg font-bold">Curriculum</h2>
-        <span class="text-xs bg-white/10 px-2 py-1 rounded text-accent">Theory of Computations</span>
+        <h2 class="text-lg font-bold">Course Modules</h2>
+        <span class="text-xs bg-white/10 px-2 py-1 rounded text-accent">STA3022F</span>
       </div>
       
-      <p class="mt-2 text-sm opacity-70 mb-4">Select a chapter or tool category.</p>
+      <p class="mt-2 text-sm opacity-70 mb-4">Select a statistical method to view notes.</p>
 
-      <!-- Category Tabs -->
-      <nav class="grid grid-cols-2 gap-2" aria-label="main-navigation">
-        
-        <button class="nav-tab btn btn-ghost col-span-2 border-dashed" data-category="tm">Turing Machines</button>
-        <button class="nav-tab btn btn-ghost col-span-2 border-dashed" data-category="lim">Limitations of Algorithmic Power</button>
-        <button class="nav-tab btn btn-ghost col-span-2 border-dashed" data-category="cop">Coping with limitations</button>
-        <button class="nav-tab btn btn-ghost col-span-2 border-dashed" data-category="prob">P, NP, and NP-complete Problems</button>
-        
+     <!-- Category Tabs: Ordered by STA3022F Schedule -->
+<nav class="flex flex-col gap-1" aria-label="main-navigation">
+  
+  <button class="nav-tab btn btn-ghost justify-start" data-category="intro">
+    1. Introduction to R
+  </button>
+  
+  <button class="nav-tab btn btn-ghost justify-start" data-category="anova">
+    2. ANOVA + Regression
+  </button>
+  
+  <button class="nav-tab btn btn-ghost justify-start" data-category="pca">
+    3. PCA + Factor Analysis
+  </button>
+  
+  <button class="nav-tab btn btn-ghost justify-start" data-category="ca">
+    4. Correspondence Analysis
+  </button>
+  
+  <button class="nav-tab btn btn-ghost justify-start" data-category="mca">
+    5. MCA + Item Response
+  </button>
+  
+  <button class="nav-tab btn btn-ghost justify-start" data-category="cluster">
+    6. Clustering + MDS
+  </button>
+  
+  <button class="nav-tab btn btn-ghost justify-start" data-category="dis">
+    7. Discriminant Analysis
+  </button>
+  
+  <button class="nav-tab btn btn-ghost justify-start" data-category="tree">
+    8. Decision Trees
+  </button>
+  
+  <button class="nav-tab btn btn-ghost justify-start" data-category="sem">
+    9. SEM
+  </button>
 
-      
-      </nav>
+</nav>
 
       <div class="solid-divider"></div>
 
-      <!-- Dynamic Topic List (Injected by script.js) -->
-      <div id="topic-menu" class="space-y-2 max-h-[500px] overflow-y-auto pr-1 scrollbar-thin">
-        <!-- Javascript will populate this based on the selected tab -->
+      <!-- Dynamic Subtopic List (Injected by script.js) -->
+      <div id="topic-menu" class="space-y-2 max-h-[400px] overflow-y-auto pr-1 scrollbar-thin">
         <div class="animate-pulse flex flex-col gap-2">
-            <div class="h-10 bg-white/5 rounded"></div>
             <div class="h-10 bg-white/5 rounded"></div>
             <div class="h-10 bg-white/5 rounded"></div>
         </div>
       </div>
 
       <div class="mt-6 pt-4 border-t border-white/5 text-xs text-center opacity-50 font-mono">
-        System Status: <span class="text-green-400">Online</span> • v5.0.1
+        System Status: <span class="text-green-400">Ready</span> • STA3022F
       </div>
     </aside>
 
-    <!-- RIGHT CONTENT: CALCULATOR INTERFACE -->
+    <!-- RIGHT CONTENT: NOTE DISPLAY -->
     <section class="glass p-6 rounded-xl min-h-[600px] relative">
       
       <!-- The Root Container for all Dynamic Modules -->
       <div id="topic-root">
-        <!-- Default State (Overwritten by JS immediately, but good for SEO/Fallback) -->
         <div class="flex flex-col items-center justify-center h-[400px] text-center opacity-60">
           <svg class="w-16 h-16 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
           </svg>
-          <h3 class="text-xl font-bold">Select a Topic</h3>
-          <p class="max-w-sm mt-2">Choose a chapter from the left menu to begin analysis.</p>
+          <h3 class="text-xl font-bold">Multivariate Analysis Notes</h3>
+          <p class="max-w-sm mt-2">Select a module from the left to load the theoretical concepts and mathematical derivations.</p>
         </div>
       </div>
 
@@ -139,8 +166,6 @@ window.MathJax = {
   <footer class="max-w-7xl mx-auto p-6 text-center text-sm opacity-60">
     <p>&copy; <span id="year">2025</span> Moegamat Samsodien.</p>
   </footer>
-
-
 
 </body>
 </html>

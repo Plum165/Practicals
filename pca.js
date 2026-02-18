@@ -1,5 +1,5 @@
 // limit.js
-export const limitModule = {
+export const pcaModule = {
     id: 'lim',
     title: 'Limitations of Algorithmic Power',
     subtopics: [
