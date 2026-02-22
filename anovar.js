@@ -3,15 +3,27 @@ export const anvoaModule = {
     id: 'anova',
     title: 'ANOVA & Multiple Linear Regression',
     subtopics: [
-        { id: 'mlr-def', title: '1. MLR: Definition & Aim' },
-        { id: 'mlr-assumptions', title: '2. Model Assumptions' },
-        { id: 'mlr-intercept', title: '3. The Intercept Term' },
-        { id: 'mlr-estimation', title: '4. Estimation: Simultaneous vs Stepwise' },
-        { id: 'mlr-r-code', title: '5. R Implementation (lm)' },
-        { id: 'mlr-ex1', title: 'Example 1: Advertising Data' },
-        { id: 'mlr-ex2-setup', title: 'Example 2: Strike Severity (Setup)' },
-        { id: 'mlr-ex2-analysis', title: 'Example 2: Strike Severity (Results)' }
-    ],
+    { id: 'mlr-def', title: '1. MLR: Definition & Aim' },
+    { id: 'mlr-assumptions', title: '2. Model Assumptions' },
+    { id: 'mlr-quality', title: '3. Evaluating Model Quality (F & R²)' }, // NEW
+    { id: 'mlr-intercept', title: '4. The Intercept Term' },
+    { id: 'mlr-estimation', title: '5. Estimation: Simultaneous vs Stepwise' },
+    { id: 'mlr-r-code', title: '6. R Implementation & Output' },
+    { id: 'mlr-prediction', title: '7. Prediction & Interpretation' }, // NEW
+    { id: 'mlr-prediction', title: '8. Prediction & Direction of Effects' },
+    { id: 'mlr-importance', title: '9. Magnitude vs Importance' },
+    { id: 'mlr-significance', title: '10. Individual Variable Significance' },
+    { id: 'mlr-stepwise-r', title: '11. Stepwise Regression in R' }, // NEW (Slide 3-5)
+    { id: 'mlr-ci', title: '12. Confidence Intervals' },             // NEW (Slide 6)
+    { id: 'mlr-categorical', title: '13. Categorical & Dummy Variables' }, // NEW (Slide 7-8)
+    { id: 'mlr-ex1', title: 'Example 1: Advertising Data' },
+    { id: 'mlr-ex2-setup', title: 'Example 2: Strike Severity (Setup)' },
+    { id: 'mlr-ex2-analysis', title: 'Example 2: Strike Severity (Results)' },    
+    { id: 'mlr-ex2-conclusion', title: 'Ex 2: Summary (Strike Severity)' },
+
+    { id: 'mlr-ex2-cat', title: 'Ex 2: Categorical Analysis' },  // NEW (Slide 10-13)
+    { id: 'mlr-advanced', title: '13. Interactions & Outliers' }    // NEW (Slide 14)
+],
     content: {
         'mlr-def': {
             title: 'Multiple Linear Regression (MLR)',
@@ -289,7 +301,768 @@ export const anvoaModule = {
                     </div>
                 </div>
             `
-        }
+        },
+        'mlr-r-code': {
+    title: 'R Implementation & Output Evaluation',
+    html: `
+        <div class="space-y-6">
+            <div class="bg-black/50 p-4 rounded-lg font-mono text-sm border border-accent/20">
+                <p class="text-accent"># Step 1: Evaluate Overall Model Quality</p>
+                <p class="text-white">summary(modelAll)</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white/5 p-4 rounded-xl border border-white/10">
+                    <h4 class="text-accent font-bold text-xs uppercase mb-2">1. The F-Test</h4>
+                    <p class="text-[11px] text-gray-400 mb-2">Tests if <strong>any</strong> independent variable has influence.</p>
+                    <div class="text-xs space-y-1">
+                        <p>$H_0: \\beta_1 = \\beta_2 = \\dots = \\beta_p = 0$</p>
+                        <p>$H_1: \\text{At least one } \\beta_i \\neq 0$</p>
+                    </div>
+                    <p class="mt-2 text-[10px] italic text-blue-300">Found at the very bottom of R output.</p>
+                </div>
+
+                <div class="bg-white/5 p-4 rounded-xl border border-white/10">
+                    <h4 class="text-accent font-bold text-xs uppercase mb-2">2. Multiple $R^2$</h4>
+                    <p class="text-[11px] text-gray-400 mb-2">Ratio of variation explained by the model ($SSR/SST$).</p>
+                    <div class="bg-black/40 p-2 rounded text-center">
+                        $$R^2 = \\frac{SSR}{SST}$$
+                    </div>
+                    <p class="mt-2 text-[10px] text-orange-300">Note: $R^2$ always increases when adding variables (Overfitting). Use <strong>Adjusted $R^2$</strong> for better modelling practice.</p>
+                </div>
+            </div>
+        </div>
+    `
+},
+'mlr-prediction': {
+    title: 'Prediction & Coefficient Interpretation',
+    html: `
+        <div class="space-y-6">
+            <section class="bg-white/5 p-5 rounded-xl border border-white/10">
+                <h4 class="text-accent font-bold mb-3">Interpreting Estimates</h4>
+                <p class="text-sm text-gray-300">Coefficients represent the effect on $Y$ of a <strong>one-unit increase</strong> in $X_i$ while holding all other variables constant.</p>
+            </section>
+
+            <section class="bg-white/5 p-5 rounded-xl border border-white/10">
+                <h4 class="text-accent font-bold mb-3">Prediction Example (Strike Data)</h4>
+                <p class="text-xs text-gray-400 mb-4">Calculate $Y$ for: Unempl=7.8, Infl=5, LaborParl=45, UnionCent=0.75</p>
+                <div class="bg-black/40 p-4 rounded font-mono text-xs overflow-x-auto">
+                    $Y = 312.8 + 17.5(7.8) + 19.4(5) - 0.14(45) - 400.57(0.75)$
+                    <br><span class="text-accent">Predicted $Y \\approx 240$</span>
+                </div>
+                <div class="mt-4 bg-black/50 p-3 rounded text-xs font-mono">
+                    <p class="text-blue-400"># In R:</p>
+                    <p>predict(modelAll, list(Unempl=7.8, Inflation=5, ...))</p>
+                </div>
+            </section>
+
+            <section class="bg-white/5 p-5 rounded-xl border border-white/10">
+                <h4 class="text-accent font-bold mb-3 text-sm">Standardized Coefficients</h4>
+                <p class="text-xs text-gray-300">Because variables have different units, you cannot compare raw "Estimates" to determine importance. Use <strong>scale()</strong> in R to compare the magnitude of influence.</p>
+                <div class="bg-black/40 p-2 mt-2 rounded font-mono text-[10px] text-center">
+                    lm(scale(Y) ~ scale(X1) + scale(X2), ...)
+                </div>
+            </section>
+        </div>
+    `
+},
+'mlr-ex2-analysis': {
+    title: 'Strike Severity: Final Results Analysis',
+    html: `
+        <div class="space-y-6">
+            <div class="bg-black/60 p-5 rounded-xl border border-white/10 font-mono text-[11px] overflow-x-auto">
+                <p class="text-white/60">F-statistic: 16.9 on 4 and 620 DF, p-value: <span class="text-accent">3.65e-13</span></p>
+                <p class="text-white/60">Multiple R-squared: <span class="text-accent">0.09833</span>, Adjusted R-squared: 0.09252</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-red-500/10 p-4 rounded-lg border border-red-500/30">
+                    <h5 class="text-red-300 font-bold text-xs uppercase">Overall Model Quality</h5>
+                    <p class="text-xs mt-1 text-gray-300">The F-statistic (16.9, p < 0.05) is highly significant. We <strong>Reject $H_0$</strong>. At least one variable is significant.</p>
+                </div>
+                <div class="bg-blue-500/10 p-4 rounded-lg border border-blue-500/30">
+                    <h5 class="text-blue-300 font-bold text-xs uppercase">Individual Significance (t-tests)</h5>
+                    <p class="text-xs mt-1 text-gray-300">Unemployment, Inflation, and Union Centralisation are significant. <strong>LaborParl (p=0.93)</strong> has no significant effect.</p>
+                </div>
+            </div>
+
+            <div class="bg-white/5 p-4 rounded-lg border border-white/10">
+                <h4 class="text-xs font-bold text-accent uppercase mb-2">Individual Variable Test</h4>
+                <p class="text-[11px] text-gray-400">Tested using a t-test with $n - p - 1$ degrees of freedom ($625 - 4 - 1 = 620$).</p>
+                <div class="text-xs mt-2 italic">
+                    $H_0: \\beta_i = 0$ vs $H_1: \\beta_i \\neq 0$
+                </div>
+            </div>
+        </div>
+    `
+},
+'mlr-quality': {
+            title: 'Evaluating Model Quality',
+            html: `
+                <div class="space-y-10">
+                    
+                    <!-- 1. THE F-TEST (Slide 4) -->
+                    <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">SLIDE 4</span>
+                            <h3 class="text-xl font-bold text-accent">1. Overall Significance: The F-Test</h3>
+                        </div>
+                        
+                        <p class="text-sm text-gray-300 mb-6 leading-relaxed">
+                            The F-test evaluates whether the model as a whole is useful. It tests if <strong>none</strong> of the independent variables have any influence.
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-black/40 p-5 rounded-lg border border-white/5">
+                                <h4 class="text-xs font-bold text-accent uppercase mb-3">Hypotheses</h4>
+                                <ul class="space-y-4 text-sm font-mono">
+                                    <li>$H_0: \\beta_1 = \\beta_2 = \\dots = \\beta_p = 0$</li>
+                                    <li>$H_1: \\text{At least one } \\beta_i \\neq 0$</li>
+                                </ul>
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <p class="text-xs text-gray-400">
+                                    If the p-value of the F-test is <strong>< 0.05</strong>, we reject $H_0$ and conclude that at least one predictor in the model is significantly different from zero.
+                                </p>
+                                <div class="mt-4 p-2 bg-blue-500/10 border border-blue-500/30 rounded text-[10px] text-blue-200">
+                                    Found at the bottom of R summary output.
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 2. R-SQUARED (Slide 7 & 9) -->
+                    <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">SLIDE 7 & 9</span>
+                            <h3 class="text-xl font-bold text-accent">2. Determination Coefficient ($R^2$)</h3>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div class="space-y-4">
+                                <p class="text-sm text-gray-300">
+                                    $R^2$ measures the ability of the model to explain variation in the outcome $Y$. It represents the ratio of <strong>Explained Variation (SSR)</strong> to <strong>Total Variation (SST)</strong>.
+                                </p>
+                                <div class="bg-black/40 p-4 rounded-lg text-center">
+                                    $$R^2 = \\frac{SSR}{SST}$$
+                                    <p class="text-[10px] opacity-50 mt-2">Value lies between 0 and 1.</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-orange-500/5 p-5 rounded-xl border border-orange-500/20">
+                                <h4 class="text-orange-300 font-bold text-xs uppercase mb-3">The Problem with $R^2$ (Overfitting)</h4>
+                                <p class="text-xs text-gray-400 leading-relaxed">
+                                    As a regression model grows (adding more variables), $R^2$ <strong>can only ever go up</strong>. This can lead to <strong>overfitting</strong>—where the model fits the sample perfectly but fails to generalize.
+                                </p>
+                                <div class="mt-4 p-3 bg-black/40 rounded-lg">
+                                    <h5 class="text-accent font-bold text-[10px] uppercase">Solution: Adjusted $R^2$</h5>
+                                    <p class="text-[11px] text-gray-300 mt-1">
+                                        The <strong>Adjusted $R^2$</strong> takes into account the number of independent variables used. It penalizes the addition of unnecessary variables.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 3. DEGREES OF FREEDOM (Slide 14) -->
+                    <div class="bg-white/5 p-4 rounded-lg border border-white/10 text-center">
+                        <p class="text-xs text-gray-400 italic">
+                            Individual significance for each variable is tested via a <strong>t-test</strong> with degrees of freedom:
+                            <span class="text-white font-mono ml-2">df = n - p - 1</span>
+                        </p>
+                    </div>
+                </div>
+            `
+        },
+        'mlr-prediction': {
+            title: 'Prediction & Direction of Effects',
+            html: `
+                <div class="space-y-8">
+                    <!-- DIRECTION OF EFFECTS (Slide 10) -->
+                    <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">SLIDE 10</span>
+                            <h3 class="text-xl font-bold text-accent">Direction of Effects</h3>
+                        </div>
+                        <p class="text-sm text-gray-300 mb-4">The <strong>sign</strong> ($+$ or $-$) of the regression coefficient tells us the nature of the relationship:</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-green-500/10 p-4 rounded-lg border border-green-500/30">
+                                <h4 class="text-green-400 font-bold text-xs uppercase mb-2">Positive Relationship ($+$)</h4>
+                                <p class="text-[11px] text-gray-300">As $X$ increases, $Y$ increases. In our example:</p>
+                                <ul class="text-[10px] mt-2 list-disc list-inside opacity-70">
+                                    <li>Unemployment ($X_1$)</li>
+                                    <li>Inflation ($X_2$)</li>
+                                </ul>
+                            </div>
+                            <div class="bg-red-500/10 p-4 rounded-lg border border-red-500/30">
+                                <h4 class="text-red-400 font-bold text-xs uppercase mb-2">Inverse Relationship ($-$)</h4>
+                                <p class="text-[11px] text-gray-300">As $X$ increases, $Y$ decreases. In our example:</p>
+                                <ul class="text-[10px] mt-2 list-disc list-inside opacity-70">
+                                    <li>Labor Parliament Rep ($X_3$)</li>
+                                    <li>Union Centralisation ($X_4$)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- PREDICTIVE PURPOSES (Slide 11) -->
+                    <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">SLIDE 11</span>
+                            <h3 class="text-xl font-bold text-accent">Predictive Modeling</h3>
+                        </div>
+                        <p class="text-sm text-gray-300 mb-4">We can predict the value of $Y$ by substituting hypothetical values for $X_i$ into the equation.</p>
+                        
+                        <div class="bg-black/40 p-5 rounded-lg border border-white/5">
+                            <h4 class="text-xs font-bold text-accent uppercase mb-3">Example: A hypothetical country</h4>
+                            <div class="text-[11px] text-gray-400 space-y-1 mb-4">
+                                <p>• Unemployment: 7.8% | Inflation: 5%</p>
+                                <p>• Labor Seats: 45% | Union Centralisation: 0.75</p>
+                            </div>
+                            <div class="bg-white/5 p-3 rounded font-mono text-xs">
+                                $Y = 312.8 + 17.5(7.8) + 19.4(5) - 0.14(45) - 400.57(0.75)$
+                                <br><span class="text-accent text-sm">Predicted Strike Severity (Y) $\\approx 240$</span>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            `
+        },
+
+        'mlr-importance': {
+            title: 'Magnitude vs. Importance of Effects',
+            html: `
+                <div class="space-y-8">
+                    <!-- UNSTANDARDIZED VS STANDARDIZED (Slide 12-13) -->
+                    <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">SLIDE 12</span>
+                            <h3 class="text-xl font-bold text-accent">Unstandardized vs. Standardized</h3>
+                        </div>
+                        
+                        <div class="bg-red-500/10 p-4 rounded-lg border border-red-500/30 mb-6">
+                            <p class="text-sm font-bold text-red-200">The "Large Estimate" Trap:</p>
+                            <p class="text-xs text-gray-300 mt-1">
+                                In our equation, the estimate for $X_4$ is <strong class="text-white">400.57</strong>. While this is the largest number, it <strong>does not</strong> automatically mean $X_4$ is the most important variable.
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-3">
+                                <h4 class="text-xs font-bold uppercase text-white/40">Unstandardized Output</h4>
+                                <p class="text-xs text-gray-400">Coefficients are measured in their original units (e.g., dollars, percentages, days). You cannot compare them directly.</p>
+                            </div>
+                            <div class="space-y-3">
+                                <h4 class="text-xs font-bold uppercase text-white/40">Standardized Output</h4>
+                                <p class="text-xs text-gray-400">Removes the units (scales the data). This allows us to <strong>order independent variables</strong> from most influential to least influential.</p>
+                            </div>
+                        </div>
+
+                        <!-- Ranking Table -->
+                        <div class="mt-8 overflow-x-auto">
+                            <table class="w-full text-left text-[10px] bg-black/40 rounded-lg">
+                                <thead class="bg-accent text-black uppercase font-bold">
+                                    <tr><th class="p-2">Rank</th><th class="p-2">Variable</th><th class="p-2">Standardized Beta</th><th class="p-2">Importance</th></tr>
+                                </thead>
+                                <tbody class="text-gray-300">
+                                    <tr class="border-b border-white/5"><td class="p-2">1</td><td class="p-2">UnionCent ($X_4$)</td><td class="p-2">-0.2231</td><td class="p-2">High</td></tr>
+                                    <tr class="border-b border-white/5"><td class="p-2">2</td><td class="p-2">Inflation ($X_2$)</td><td class="p-2">0.1602</td><td class="p-2">Medium-High</td></tr>
+                                    <tr class="border-b border-white/5"><td class="p-2">3</td><td class="p-2">Unempl ($X_1$)</td><td class="p-2">0.0946</td><td class="p-2">Medium</td></tr>
+                                    <tr><td class="p-2">4</td><td class="p-2">LaborParl ($X_3$)</td><td class="p-2">-0.0033</td><td class="p-2">Negligible</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            `
+        },
+
+        'mlr-significance': {
+            title: 'Individual Variable Significance',
+            html: `
+                <div class="space-y-8">
+                    <!-- T-TEST LOGIC (Slide 14) -->
+                    <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">SLIDE 14</span>
+                            <h3 class="text-xl font-bold text-accent">Testing the Contribution of $X_i$</h3>
+                        </div>
+                        <p class="text-sm text-gray-300 mb-6">Once the overall model is deemed significant (via F-test), we test each variable individually using a <strong>t-test</strong>.</p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div class="bg-black/40 p-4 rounded-lg border border-white/5">
+                                <h4 class="text-xs font-bold text-accent uppercase mb-2">Hypothesis</h4>
+                                <ul class="text-sm font-mono space-y-1">
+                                    <li>$H_0: \\beta_i = 0$ <span class="text-[10px] opacity-50 text-white">(No Effect)</span></li>
+                                    <li>$H_1: \\beta_i \\neq 0$ <span class="text-[10px] opacity-50 text-white">(Significant Effect)</span></li>
+                                </ul>
+                            </div>
+                            <div class="bg-black/40 p-4 rounded-lg border border-white/5 text-center flex flex-col justify-center">
+                                <h4 class="text-xs font-bold text-accent uppercase mb-2">Degrees of Freedom</h4>
+                                <p class="text-lg font-mono">$df = n - p - 1$</p>
+                                <p class="text-[10px] text-gray-400 mt-1">($n$: Sample Size | $p$: Predictors)</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-500/10 p-4 rounded-lg border border-blue-500/30">
+                            <p class="text-xs text-gray-300">
+                                In R, we check the <strong class="text-white">Pr(>|t|)</strong> column. If this value is < 0.05, we reject $H_0$ and conclude the variable makes a significant contribution to the model.
+                            </p>
+                        </div>
+                    </section>
+                </div>
+            `
+        },
+
+        'mlr-ex2-conclusion': {
+            title: 'Ex 2: Final Summary (Strike Severity)',
+            html: `
+                <div class="space-y-6">
+                    <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">SLIDE 15</span>
+                            <h3 class="text-xl font-bold text-accent">Final Conclusions</h3>
+                        </div>
+
+                        <div class="bg-black/40 p-5 rounded-lg border border-white/5 mb-6">
+                            <h4 class="text-xs font-bold text-white uppercase mb-3">Model Parameters</h4>
+                            <div class="flex justify-around text-center">
+                                <div><p class="text-[10px] opacity-50">Sample ($n$)</p><p class="text-lg font-bold">625</p></div>
+                                <div><p class="text-[10px] opacity-50">Predictors ($p$)</p><p class="text-lg font-bold">4</p></div>
+                                <div><p class="text-[10px] opacity-50">DF</p><p class="text-lg font-bold text-accent">620</p></div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-green-500/10 p-4 rounded-lg border border-green-500/30">
+                                <h4 class="text-green-400 font-bold text-xs uppercase mb-2">Reject $H_0$ (Significant)</h4>
+                                <p class="text-[11px] text-gray-300 italic">"Significantly different from zero"</p>
+                                <ul class="text-[10px] mt-2 space-y-1 text-white">
+                                    <li>1. Unemployment ($X_1$)</li>
+                                    <li>2. Inflation ($X_2$)</li>
+                                    <li>4. Union Centralisation ($X_4$)</li>
+                                </ul>
+                            </div>
+                            <div class="bg-red-500/10 p-4 rounded-lg border border-red-500/30">
+                                <h4 class="text-red-400 font-bold text-xs uppercase mb-2">Fail to Reject $H_0$</h4>
+                                <p class="text-[11px] text-gray-300 italic">"No significant effect"</p>
+                                <ul class="text-[10px] mt-2 space-y-1 text-white">
+                                    <li>3. Parliamentary Rep ($X_3$)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 p-4 bg-white/5 rounded-lg border border-white/10">
+                            <p class="text-xs text-center text-gray-400">
+                                Unemployment, inflation, and union centralisation are all highly significant (even at the 0.5% level).
+                            </p>
+                        </div>
+                    </section>
+                </div>
+            `
+        },
+       'mlr-stepwise-r': {
+            title: 'Stepwise Regression in R',
+            html: `
+                <div class="space-y-8">
+                    <!-- THE STEP FUNCTION (Slide 3-4) -->
+                    <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">R SYNTAX</span>
+                            <h3 class="text-xl font-bold text-accent">Using the <code>step()</code> Function</h3>
+                        </div>
+                        
+                        <p class="text-sm text-gray-300 mb-4 leading-relaxed">
+                            Backward elimination starts with all variables and removes the least significant ones one by one based on either the <strong>AIC</strong> or an <strong>F-test</strong>.
+                        </p>
+                        
+                        <div class="bg-black/50 p-4 rounded-lg font-mono text-[11px] border border-accent/20 space-y-2">
+                            <p class="text-accent"># Method 1: AIC Elimination (Default)</p>
+                            <p class="text-white">step(modelAll, direction="backward")</p>
+                            <br>
+                            <p class="text-accent"># Method 2: F-test Elimination</p>
+                            <p class="text-white">step(modelAll, direction="backward", test="F")</p>
+                        </div>
+                    </section>
+
+                    <!-- EXCLUDING VARIABLES (Slide 5) -->
+                    <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                        <h4 class="text-accent font-bold mb-4">Updating the Model</h4>
+                        <p class="text-sm text-gray-300 mb-4">
+                            Once the stepwise process identifies a non-significant variable (like <strong>LaborParl</strong>), we update our model object:
+                        </p>
+                        
+                        <div class="bg-black/60 p-5 rounded-xl border border-white/10 font-mono text-[11px] leading-tight overflow-x-auto">
+                            <p class="text-cyan-400">> modelStepwise = update(modelAll, . ~ . - LaborParl)</p>
+                            <p class="text-cyan-400">> summary(modelStepwise)</p>
+                            <br>
+                            <p class="text-white/40">Call:</p>
+                            <p class="text-white">lm(formula = Volume ~ Unempl + Inflation + UnionCent, data = strikes_all)</p>
+                            <br>
+                            <p class="text-white/40">Coefficients:</p>
+                            <table class="w-full text-left mt-2">
+                                <thead class="text-white/60 border-b border-white/10">
+                                    <tr>
+                                        <th class="py-1">Variable</th>
+                                        <th class="py-1">Estimate</th>
+                                        <th class="py-1">t value</th>
+                                        <th class="py-1 text-right">Pr(>|t|)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-300">
+                                    <tr><td>(Intercept)</td><td>306.593</td><td>5.627</td><td class="text-right text-accent">2.78e-08 ***</td></tr>
+                                    <tr><td>Unempl</td><td>17.532</td><td>2.389</td><td class="text-right text-accent">0.0172 *</td></tr>
+                                    <tr><td>Inflation</td><td>19.420</td><td>4.134</td><td class="text-right text-accent">4.05e-05 ***</td></tr>
+                                    <tr><td>UnionCent</td><td>-399.794</td><td>-5.695</td><td class="text-right text-accent">1.91e-08 ***</td></tr>
+                                </tbody>
+                            </table>
+                            <br>
+                            <div class="pt-2 border-t border-white/5 space-y-1 text-white/60">
+                                <p>Multiple R-squared: <span class="text-white">0.09832</span></p>
+                                <p>Adjusted R-squared: <span class="text-white">0.09397</span></p>
+                                <p>F-statistic: <span class="text-white">22.57 on 3 and 621 DF</span></p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="p-4 bg-accent/10 border border-accent/20 rounded-lg">
+                        <p class="text-xs text-gray-300">
+                            <strong>Note:</strong> After removing <em>LaborParl</em>, the Adjusted $R^2$ actually <strong>increased</strong> (from 0.0925 to 0.09397), indicating a more efficient model with fewer unnecessary predictors.
+                        </p>
+                    </div>
+                </div>
+            `
+        },'mlr-ci': {
+            title: 'Confidence Intervals & Predictions',
+            html: `
+                <div class="space-y-8">
+                    <!-- THEORY SECTION -->
+                    <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">THEORY</span>
+                            <h3 class="text-xl font-bold text-accent">Defining the Range</h3>
+                        </div>
+                        <p class="text-sm text-gray-300 leading-relaxed">
+                            Confidence intervals give us a range of <strong>plausible values</strong> for the unknown population parameters ($\\beta_i$) in our model.
+                        </p>
+                    </section>
+
+                    <!-- R CONSOLE: CONFINT -->
+                    <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                        <h4 class="text-accent font-bold mb-4">1. Coefficients Confidence Intervals</h4>
+                        <p class="text-xs text-gray-400 mb-4">To get the intervals for the coefficients in R:</p>
+                        
+                        <div class="bg-black/60 p-5 rounded-xl border border-white/10 font-mono text-[11px] leading-tight overflow-x-auto">
+                            <p class="text-cyan-400">> confint(modelStepwise, level=0.95)</p>
+                            <table class="w-full text-left mt-4 border-t border-white/5">
+                                <thead>
+                                    <tr class="text-white/40">
+                                        <th class="py-2"></th>
+                                        <th class="py-2">2.5 %</th>
+                                        <th class="py-2">97.5 %</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-300">
+                                    <tr class="border-b border-white/5">
+                                        <td class="py-2 text-white/60">(Intercept)</td>
+                                        <td>199.58819</td>
+                                        <td>413.59776</td>
+                                    </tr>
+                                    <tr class="border-b border-white/5">
+                                        <td class="py-2 text-white/60">Unempl</td>
+                                        <td>3.11986</td>
+                                        <td>31.94406</td>
+                                    </tr>
+                                    <tr class="border-b border-white/5">
+                                        <td class="py-2 text-white/60">Inflation</td>
+                                        <td>10.19545</td>
+                                        <td>28.64388</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 text-white/60">UnionCent</td>
+                                        <td>-537.66195</td>
+                                        <td>-261.92611</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- R CONSOLE: PREDICT -->
+                    <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                        <h4 class="text-accent font-bold mb-4">2. Making Predictions</h4>
+                        <p class="text-xs text-gray-400 mb-4">Using the updated model to predict $Y$ with the same hypothetical values as before:</p>
+                        
+                        <div class="bg-black/60 p-5 rounded-xl border border-white/10 font-mono text-[11px] leading-tight">
+                            <p class="text-cyan-400">> predict(modelStepwise, list(Unempl=7.8, Inflation=5, UnionCent=0.75))</p>
+                            <div class="mt-4 flex gap-8">
+                                <div>
+                                    <p class="text-white/40 italic underline mb-1">Observation</p>
+                                    <p class="text-white">1</p>
+                                </div>
+                                <div>
+                                    <p class="text-accent italic underline mb-1">Predicted Value</p>
+                                    <p class="text-accent text-lg font-bold">240.5951</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                        <p class="text-xs text-gray-300">
+                            <strong>Interpretation Tip:</strong> Note that for all significant variables (Unempl, Inflation, UnionCent), the 95% confidence interval <strong>does not include zero</strong>. This is consistent with our p-values being < 0.05.
+                        </p>
+                    </div>
+                </div>
+            `
+        },
+       'mlr-categorical': {
+            title: 'Categorical & Dummy Variables',
+            html: `
+                <div class="space-y-10">
+                    <!-- 1. THE CHALLENGE (Slide 7) -->
+                    <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">THEORY</span>
+                            <h3 class="text-xl font-bold text-accent">Why "Special Care" is Needed</h3>
+                        </div>
+                        <p class="text-sm text-gray-300 leading-relaxed mb-6">
+                            Regression equations are mathematical functions ($Y = \\beta X$). We cannot perform math on words like "Red" or "High Risk." To include these, we must <strong>recode</strong> them into numbers.
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-black/30 p-4 rounded-lg border border-white/5 text-center">
+                                <p class="text-accent font-bold text-xs uppercase mb-1">Company Growth</p>
+                                <p class="text-[10px] text-gray-400">Start, Middle, End</p>
+                            </div>
+                            <div class="bg-black/30 p-4 rounded-lg border border-white/5 text-center">
+                                <p class="text-accent font-bold text-xs uppercase mb-1">Portfolio Risk</p>
+                                <p class="text-[10px] text-gray-400">No Risk, Average, High</p>
+                            </div>
+                            <div class="bg-black/30 p-4 rounded-lg border border-white/5 text-center">
+                                <p class="text-accent font-bold text-xs uppercase mb-1">Product Colour</p>
+                                <p class="text-[10px] text-gray-400">Red, Blue, Yellow</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 2. THE REFERENCE CATEGORY (Slide 7) -->
+                    <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                        <h4 class="text-accent font-bold mb-4">The Reference Category</h4>
+                        <div class="space-y-4 text-sm text-gray-300">
+                            <p>Recoding requires choosing one level to be the <strong>Reference Category</strong> (the baseline).</p>
+                            <div class="p-4 bg-accent/5 border-l-4 border-accent rounded">
+                                <p class="italic">"All other levels will be <strong>compared to</strong> this level in the regression output."</p>
+                            </div>
+                            <p class="text-xs text-gray-400">
+                                <strong>Note:</strong> Technically, it makes no difference which level is chosen as the reference, but practically, it should be a baseline that makes sense for comparison (e.g., "No Risk" or "Placebo").
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- 3. THE DUMMY CODING PROCESS (Slide 8) -->
+                    <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                        <h4 class="text-accent font-bold mb-2">The $L - 1$ Rule</h4>
+                        <p class="text-xs text-gray-400 mb-6">
+                            If a categorical variable has $L$ levels, you must create <strong>$L - 1$</strong> binary (indicator) variables.
+                        </p>
+
+                        <!-- Visual Dummy Coding Example -->
+                        <div class="bg-black/40 p-5 rounded-xl border border-white/5">
+                            <h5 class="text-[10px] font-bold text-white/40 uppercase mb-4 text-center">Recoding Example: Product Colour ($L=3$)</h5>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-center text-[11px] border-collapse">
+                                    <thead>
+                                        <tr class="text-white border-b border-white/10">
+                                            <th class="py-2 px-4 text-left">Original Category</th>
+                                            <th class="py-2 px-4 bg-blue-500/10 text-blue-300 font-mono">Ind_Blue</th>
+                                            <th class="py-2 px-4 bg-yellow-500/10 text-yellow-300 font-mono">Ind_Yellow</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-gray-400">
+                                        <tr class="border-b border-white/5 italic">
+                                            <td class="py-3 px-4 text-left font-bold text-white">Red (Reference)</td>
+                                            <td class="py-3 px-4">0</td>
+                                            <td class="py-3 px-4">0</td>
+                                        </tr>
+                                        <tr class="border-b border-white/5">
+                                            <td class="py-3 px-4 text-left font-bold text-white">Blue</td>
+                                            <td class="py-3 px-4 font-bold text-blue-400">1</td>
+                                            <td class="py-3 px-4">0</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-3 px-4 text-left font-bold text-white">Yellow</td>
+                                            <td class="py-3 px-4">0</td>
+                                            <td class="py-3 px-4 font-bold text-yellow-400">1</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="p-3 bg-green-500/10 rounded border border-green-500/30">
+                                <p class="text-xs font-bold text-green-300 mb-1">Value = 1</p>
+                                <p class="text-[10px] text-gray-400">The observation belongs to that specific indicator level.</p>
+                            </div>
+                            <div class="p-3 bg-red-500/10 rounded border border-red-500/30">
+                                <p class="text-xs font-bold text-red-300 mb-1">Value = 0</p>
+                                <p class="text-[10px] text-gray-400">The observation belongs to the Reference Category (or a different indicator).</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            `
+        },
+'mlr-ex2-cat': {
+            title: 'Ex 2: Categorical Analysis (Dummy Coding)',
+            html: `
+                <div class="space-y-10">
+                    <!-- 1. RESEARCH CONTEXT (Slide 9) -->
+                    <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">CONTEXT</span>
+                            <h3 class="text-xl font-bold text-accent">Vague Theory & Model Uncertainty</h3>
+                        </div>
+                        <p class="text-sm text-gray-300 leading-relaxed mb-4">
+                            Taken from Western (1996), this study attempts to explain <strong>Strike Severity</strong> (days lost per 1000 wage earners) using four numeric predictors and one categorical factor:
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-[11px] text-gray-400">
+                            <ul class="space-y-1">
+                                <li><strong class="text-white">X1:</strong> Unemployment levels</li>
+                                <li><strong class="text-white">X2:</strong> Inflation levels</li>
+                                <li><strong class="text-white">X3:</strong> Social Democratic/Labour representation</li>
+                            </ul>
+                            <ul class="space-y-1">
+                                <li><strong class="text-white">X4:</strong> Union Centralisation</li>
+                                <li><strong class="text-white text-accent">X5 (Categorical):</strong> Year (Decade: 50s, 60s, 70s, 80s)</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <!-- 2. VISUAL RECODING GRID (Slide 10) -->
+                    <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                        <h4 class="text-accent font-bold mb-4">Visualizing the Indicator (Dummy) Mapping</h4>
+                        <p class="text-xs text-gray-400 mb-6">Observe how the single "Year" column is transformed into three binary columns. The <strong>50s</strong> level is the reference.</p>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-center text-[10px] border-collapse bg-black/20 rounded-lg">
+                                <thead class="bg-white/5 text-white/60">
+                                    <tr>
+                                        <th class="p-2 border-b border-white/10">Year (L)</th>
+                                        <th class="p-2 border-b border-white/10">Decade (ID)</th>
+                                        <th class="p-2 border-b border-white/10 bg-blue-500/10 text-blue-300">Ind_60s</th>
+                                        <th class="p-2 border-b border-white/10 bg-green-500/10 text-green-300">Ind_70s</th>
+                                        <th class="p-2 border-b border-white/10 bg-red-500/10 text-red-300">Ind_80s</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-white/5 opacity-60">
+                                        <td class="p-2 font-bold text-white">50s</td><td class="p-2 italic">Ref</td>
+                                        <td class="p-2">0</td><td class="p-2">0</td><td class="p-2">0</td>
+                                    </tr>
+                                    <tr class="border-b border-white/5 bg-blue-500/5">
+                                        <td class="p-2 font-bold text-white">60s</td><td class="p-2">2</td>
+                                        <td class="p-2 font-bold text-blue-400">1</td><td class="p-2">0</td><td class="p-2">0</td>
+                                    </tr>
+                                    <tr class="border-b border-white/5 bg-green-500/5">
+                                        <td class="p-2 font-bold text-white">70s</td><td class="p-2">3</td>
+                                        <td class="p-2">0</td><td class="p-2 font-bold text-green-400">1</td><td class="p-2">0</td>
+                                    </tr>
+                                    <tr class="bg-red-500/5">
+                                        <td class="p-2 font-bold text-white">80s</td><td class="p-2">4</td>
+                                        <td class="p-2">0</td><td class="p-2">0</td><td class="p-2 font-bold text-red-400">1</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- 3. R IMPLEMENTATION (Slide 11-12) -->
+                    <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                        <h4 class="text-accent font-bold mb-4">R Implementation</h4>
+                        <div class="bg-black/60 p-4 rounded-lg font-mono text-[11px] space-y-3 mb-6">
+                            <p class="text-cyan-400"># 1. Create dummy matrix (L-1 categories)</p>
+                            <p class="text-white">Decade.f = factor(Decade)</p>
+                            <p class="text-white">dummies = model.matrix(~Decade.f)</p>
+                            <br>
+                            <p class="text-cyan-400"># 2. Update model including dummies for 60s, 70s, and 80s</p>
+                            <p class="text-white">modelCategorical = update(modelAll, . ~ . + dummies[, 2:4])</p>
+                        </div>
+
+                        <div class="bg-black/60 p-5 rounded-xl border border-white/10 font-mono text-[11px] overflow-x-auto">
+                            <p class="text-white/40 mb-2">Coefficients (Partial Output):</p>
+                            <table class="w-full text-left">
+                                <thead>
+                                    <tr class="text-white border-b border-white/10">
+                                        <th class="py-1">Variable</th><th class="py-1">Estimate</th><th class="py-1">Pr(>|t|)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-300">
+                                    <tr><td>(Intercept)</td><td>250.871</td><td>0.0116 *</td></tr>
+                                    <tr><td>Unempl</td><td>31.555</td><td>0.0001 ***</td></tr>
+                                    <tr class="opacity-40"><td>Decade.f60s</td><td>7.914</td><td>0.8917</td></tr>
+                                    <tr class="opacity-40"><td>Decade.f70s</td><td>-65.848</td><td>0.2977</td></tr>
+                                    <tr class="text-accent font-bold"><td>Decade.f80s</td><td>-269.488</td><td>0.0004 ***</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- 4. FINAL INTERPRETATION (Slide 13) -->
+                    <section class="bg-blue-900/20 p-6 rounded-xl border border-blue-500/30">
+                        <h4 class="text-blue-300 font-bold text-sm uppercase mb-4 tracking-widest">Final Verdict: The 80s Effect</h4>
+                        <div class="space-y-4 text-sm text-gray-300 leading-relaxed">
+                            <p>
+                                Of the indicator variables, <strong class="text-white">only the 1980s (Ind_80s) is significant</strong>. Because the coefficient is negative ($-269.488$), we interpret this <strong>relative to the reference category (1950s)</strong>.
+                            </p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-black/40 p-4 rounded-lg border border-white/5">
+                                    <p class="text-accent font-bold mb-1">Statistical Finding:</p>
+                                    <p class="text-xs italic">"Strike volumes are significantly lower in the 1980s than in the 1950s."</p>
+                                </div>
+                                <div class="bg-black/40 p-4 rounded-lg border border-white/5">
+                                    <p class="text-accent font-bold mb-1">Magnitude Interpretation:</p>
+                                    <p class="text-xs">On average, there were <strong>~270 fewer strike days</strong> lost per 1000 workers in the 80s compared to the 50s.</p>
+                                </div>
+                            </div>
+
+                            <p class="pt-4 border-t border-white/10 text-xs italic">
+                                <strong>Model Improvement:</strong> The addition of these categorical indicators increased the explained variation ($R^2$) to <strong>11.9%</strong> and the Adjusted $R^2$ to <strong>10.9%</strong>.
+                            </p>
+                        </div>
+                    </section>
+                </div>
+            `
+        },
+'mlr-advanced': {
+    title: 'Additional Topics & Diagnostics',
+    html: `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white/5 p-4 rounded-lg border border-white/10 shadow-sm">
+                <h4 class="text-accent font-bold text-xs uppercase mb-2">Interactions</h4>
+                <p class="text-[11px] text-gray-400">Assumes the influence of one independent variable <strong>depends</strong> on the level of another variable.</p>
+            </div>
+            
+            <div class="bg-white/5 p-4 rounded-lg border border-white/10 shadow-sm">
+                <h4 class="text-accent font-bold text-xs uppercase mb-2">Outlier Detection</h4>
+                <p class="text-[11px] text-gray-400">Identifying observations with high influence using <strong>Cook’s Distance</strong> or Standardised Residuals.</p>
+            </div>
+
+            <div class="bg-white/5 p-4 rounded-lg border border-white/10 shadow-sm">
+                <h4 class="text-accent font-bold text-xs uppercase mb-2">Multicollinearity</h4>
+                <p class="text-[11px] text-gray-400">Occurs when independent variables are <strong>strongly correlated</strong> with each other, making coefficients unstable.</p>
+            </div>
+
+            <div class="bg-white/5 p-4 rounded-lg border border-white/10 shadow-sm">
+                <h4 class="text-accent font-bold text-xs uppercase mb-2">Linearity</h4>
+                <p class="text-[11px] text-gray-400">The basic assumption that the relationship follows a straight line ($Y = \\beta X$).</p>
+            </div>
+        </div>
+    `
+}
         
     }
 };
