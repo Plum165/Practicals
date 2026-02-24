@@ -22,7 +22,21 @@ export const anvoaModule = {
     { id: 'mlr-ex2-conclusion', title: 'Ex 2: Summary (Strike Severity)' },
 
     { id: 'mlr-ex2-cat', title: 'Ex 2: Categorical Analysis' },  // NEW (Slide 10-13)
-    { id: 'mlr-advanced', title: '13. Interactions & Outliers' }    // NEW (Slide 14)
+    { id: 'mlr-advanced', title: '13. Interactions & Outliers' } ,   // NEW (Slide 14)
+
+    { id: 'anova-intro', title: '14. Intro to ANOVA' },
+    { id: 'anova-partition', title: '15. Partitioning Sum of Squares' },
+    { id: 'anova-math', title: '16. ANOVA Mathematical Notation' },
+    { id: 'anova-table', title: '17. The ANOVA Table & Decision' },
+    { id: 'anova-types', title: '18. Types of ANOVA' },
+
+    //Slide deck ANOVA Part 2
+    { id: 'anova-ex1-setup', title: '19. Ex 1: Foster Rats (Setup)' },
+    { id: 'anova-ex1-math', title: '20. Ex 1: Partitioning Sum of Squares' },
+    { id: 'anova-ex1-r', title: '21. Ex 1: R Output & Interpretation' },
+    { id: 'anova-posthoc', title: '22. Post-hoc: Scheffé’s Method' },
+    { id: 'anova-ex1-posthoc', title: '23. Ex 1: Pairwise Comparisons' }
+
 ],
     content: {
         'mlr-def': {
@@ -1062,7 +1076,496 @@ export const anvoaModule = {
             </div>
         </div>
     `
+},
+'anova-intro': {
+    title: 'Introduction to ANOVA',
+    html: `
+        <div class="space-y-10">
+            <!-- 1. DEFINITION & STEPS -->
+            <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="bg-purple-600 text-white text-xs font-bold px-2 py-1 rounded">CONCEPT</span>
+                    <h3 class="text-xl font-bold text-accent">Analysis of Variance</h3>
+                </div>
+                <p class="text-sm text-gray-300 leading-relaxed mb-6">
+                    ANOVA is an extension of the t-test used to compare means across <strong>more than 2 groups</strong>. It determines if the variation between group means is larger than the variation within the groups.
+                </p>
+
+                <h4 class="text-xs font-bold text-white uppercase tracking-widest mb-4">How to perform ANOVA:</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-black/30 p-4 rounded-lg border border-white/5 relative">
+                        <span class="absolute -top-2 -left-2 w-6 h-6 bg-accent text-black rounded-full flex items-center justify-center font-bold text-xs">1</span>
+                        <p class="text-[11px] text-gray-300 mt-2"><strong>Formulate</strong> the statistical hypothesis ($H_0$ and $H_1$).</p>
+                    </div>
+                    <div class="bg-black/30 p-4 rounded-lg border border-white/5 relative">
+                        <span class="absolute -top-2 -left-2 w-6 h-6 bg-accent text-black rounded-full flex items-center justify-center font-bold text-xs">2</span>
+                        <p class="text-[11px] text-gray-300 mt-2"><strong>Compute</strong> an F-statistic based on partitioned sum of squares.</p>
+                    </div>
+                    <div class="bg-black/30 p-4 rounded-lg border border-white/5 relative">
+                        <span class="absolute -top-2 -left-2 w-6 h-6 bg-accent text-black rounded-full flex items-center justify-center font-bold text-xs">3</span>
+                        <p class="text-[11px] text-gray-300 mt-2"><strong>Compare</strong> with the critical value to generate a conclusion.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. SIMPLE WORKED EXAMPLE -->
+            <section class="bg-accent/5 p-6 rounded-xl border border-accent/20">
+                <h4 class="text-white font-bold mb-4">A Simple Example: Fertilizer Study</h4>
+                <p class="text-xs text-gray-400 mb-6">
+                    A researcher wants to know if three different brands of fertilizer (A, B, and C) result in different average plant heights.
+                </p>
+
+                <div class="space-y-6">
+                    <!-- Step 1 in Example -->
+                    <div>
+                        <p class="text-xs font-bold text-accent uppercase mb-2">Step 1: Hypotheses</p>
+                        <div class="bg-black/40 p-4 rounded-lg border border-white/5 font-mono text-xs">
+                            <p>$H_0: \\mu_A = \\mu_B = \\mu_C$</p>
+                            <p class="text-gray-500 italic mt-1">(All fertilizers have the same effect on growth)</p>
+                            <br>
+                            <p>$H_1: \\text{At least one mean is different}$</p>
+                            <p class="text-gray-500 italic mt-1">(At least one fertilizer brand performs better or worse)</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 & 3 in Example -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <p class="text-xs font-bold text-accent uppercase mb-2">Step 2: The Test</p>
+                            <p class="text-[11px] text-gray-300 leading-relaxed">
+                                We collect height data from 30 plants (10 per brand). We calculate the <strong>F-statistic</strong>. If the "Between Group" variance is high relative to "Within Group" error, the F-value increases.
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-accent uppercase mb-2">Step 3: Conclusion</p>
+                            <div class="p-3 bg-white/5 rounded border border-white/10">
+                                <p class="text-[11px] text-gray-400 italic">
+                                    If our p-value is <strong>0.02</strong> (which is < 0.05), we <strong class="text-green-400">Reject $H_0$</strong>. 
+                                    We conclude that the fertilizers do NOT have the same effect.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    `
+},
+'anova-partition': {
+            title: 'Partitioning Sum of Squares',
+            html: `
+                <div class="space-y-10">
+                    <!-- 1. THE CONCEPT OF EXPLAINED VARIATION (Slide 4) -->
+                    <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">SLIDE 4</span>
+                            <h3 class="text-xl font-bold text-accent">Variability Attribution</h3>
+                        </div>
+                        
+                        <p class="text-sm text-gray-300 leading-relaxed mb-6">
+                            There is a certain amount of variation in the <strong>Dependent Variable (Y)</strong>. We attempt to attribute this variation to one or more <strong>Independent Variables (X)</strong>.
+                        </p>
+
+                        <div class="bg-black/40 p-5 rounded-lg border border-white/5">
+                            <h4 class="text-xs font-bold text-white uppercase tracking-widest mb-4">When variation is "Significant":</h4>
+                            <div class="space-y-4">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-5 h-5 bg-green-500/20 text-green-400 rounded-full flex items-center justify-center text-[10px] font-bold mt-0.5">1</div>
+                                    <p class="text-[11px] text-gray-400">The independent variable has a <strong>significant effect</strong> on the outcome.</p>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="w-5 h-5 bg-green-500/20 text-green-400 rounded-full flex items-center justify-center text-[10px] font-bold mt-0.5">2</div>
+                                    <p class="text-[11px] text-gray-400">We <strong>Reject $H_0$</strong> (which claimed all means were equal) and establish that at least one group mean differs significantly from the rest.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 2. THE THREE COMPONENTS (Slide 5) -->
+                    <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">SLIDE 5</span>
+                            <h3 class="text-xl font-bold text-accent">Decomposing Variability</h3>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                            <!-- SSTR -->
+                            <div class="bg-green-500/5 p-5 rounded-xl border border-green-500/20">
+                                <div class="flex justify-between items-start mb-3">
+                                    <h4 class="text-green-400 font-bold text-xs uppercase tracking-tighter">SSTR (Treatment)</h4>
+                                    <span class="text-[10px] bg-green-500/20 text-green-300 px-2 py-0.5 rounded">Explained</span>
+                                </div>
+                                <p class="text-[11px] text-gray-400 leading-relaxed">
+                                    The portion of total variability that is <strong>explained</strong> by our independent variables (Treatments). It measures the spread between different group means.
+                                </p>
+                            </div>
+
+                            <!-- SSE -->
+                            <div class="bg-red-500/5 p-5 rounded-xl border border-red-500/20">
+                                <div class="flex justify-between items-start mb-3">
+                                    <h4 class="text-red-400 font-bold text-xs uppercase tracking-tighter">SSE (Error/Residual)</h4>
+                                    <span class="text-[10px] bg-red-500/20 text-red-300 px-2 py-0.5 rounded">Unexplained</span>
+                                </div>
+                                <p class="text-[11px] text-gray-400 leading-relaxed">
+                                    The portion of variability <strong>left over</strong> after effects are accounted for. This is "noise" or natural variation within the groups.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- THE IDENTITY BOX -->
+                        <div class="bg-black/40 p-8 rounded-2xl border border-white/10 text-center relative overflow-hidden">
+                            <!-- Decorative background glow -->
+                            <div class="absolute -top-10 -right-10 w-32 h-32 bg-accent/10 blur-3xl rounded-full"></div>
+                            
+                            <h4 class="text-xs font-bold text-white/40 uppercase mb-4">The Fundamental Identity</h4>
+                            <div class="text-3xl md:text-4xl font-black tracking-tighter text-white">
+                                $$SST = SSTR + SSE$$
+                            </div>
+                            <p class="text-[10px] text-gray-500 mt-6 uppercase tracking-widest">
+                                Total Sum of Squares = Treatment SS + Error SS
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- 3. VISUAL FLOW -->
+                    <div class="max-w-md mx-auto grid grid-cols-1 md:grid-cols-3 gap-2 text-center items-center">
+    <!-- Box 1 -->
+    <div class="p-2 bg-white/5 rounded-lg border border-white/5 shadow-sm">
+        <p class="text-[8px] text-white/30 uppercase tracking-tighter mb-0.5">Total Var</p>
+        <p class="text-sm font-mono text-white">100%</p>
+    </div>
+
+    <!-- Operator (Desktop) -->
+    <div class="hidden md:flex items-center justify-center text-accent text-sm font-bold">=</div>
+    <!-- Operator (Mobile) -->
+    <div class="md:hidden text-accent text-xs font-bold my-[-4px]">↓</div>
+
+    <!-- Box 2 -->
+    <div class="p-2 bg-white/5 rounded-lg border border-white/5 shadow-sm">
+        <p class="text-[8px] text-white/30 uppercase tracking-tighter mb-0.5">Explained</p>
+        <p class="text-sm font-mono text-green-400">High SSTR</p>
+    </div>
+
+    <!-- Operator (Desktop) -->
+    <div class="hidden md:flex items-center justify-center text-accent text-sm font-bold">+</div>
+    <!-- Operator (Mobile) -->
+    <div class="md:hidden text-accent text-xs font-bold my-[-4px]">↓</div>
+
+    <!-- Box 3 -->
+    <div class="p-2 bg-white/5 rounded-lg border border-white/5 shadow-sm">
+        <p class="text-[8px] text-white/30 uppercase tracking-tighter mb-0.5">Residual</p>
+        <p class="text-sm font-mono text-red-400">Low SSE</p>
+    </div>
+
+                </div>
+
+                 <div class="space-y-12">
+                    <!-- 1. THE MATHEMATICAL IDENTITY (Slide 6) -->
+                    <section class="bg-white/5 p-8 rounded-xl border border-white/10 shadow-lg">
+                        <h4 class="text-xs font-bold text-white/40 uppercase tracking-widest mb-10 text-center">Mathematical Identity</h4>
+
+                        <div class="flex flex-col items-center justify-center space-y-10">
+                            <!-- Top Identity with Braces -->
+                            <div class="text-xl md:text-3xl text-center font-bold">
+                                $$\\underbrace{\\color{#ef4444}{SST}}_{\\text{Total SS}} = \\underbrace{\\color{#3b82f6}{SSTR}}_{\\text{Between Treatment SS}} + \\underbrace{\\color{#22c55e}{SSE}}_{\\text{Within Treatment SS}}$$
+                            </div>
+
+                            <!-- Full Summation Formulas -->
+                            <div class="bg-black/20 p-8 rounded-2xl border border-white/5 overflow-x-auto w-full text-center">
+                                <div class="text-lg md:text-xl lg:text-3xl inline-block whitespace-nowrap">
+                                    $$\\color{#ef4444}{\\sum_{j=1}^{t} \\sum_{i=1}^{n_j} (Y_{ij} - \\bar{Y}_{..})^2} = \\color{#3b82f6}{\\sum_{j=1}^{t} n_j (\\bar{Y}_j - \\bar{Y}_{..})^2} + \\color{#22c55e}{\\sum_{j=1}^{t} \\sum_{i=1}^{n_j} (Y_{ij} - \\bar{Y}_j)^2}$$
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 2. NOTATIONS & DEFINITIONS (Slide 6) -->
+                    <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                        <h4 class="text-accent font-bold mb-6 uppercase text-xs tracking-widest border-b border-white/10 pb-2">Notations</h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm">
+                            <!-- Left Column: Variable Definitions -->
+                            <div class="space-y-4">
+                                <div class="flex gap-4 items-start group">
+                                    <span class="bg-white/10 px-2 py-1 rounded text-white font-mono text-xs w-12 text-center">$Y_{ij}$</span>
+                                    <p class="text-gray-400 leading-tight">The $i^{th}$ observation in the $j^{th}$ group.</p>
+                                </div>
+                                <div class="flex gap-4 items-start group">
+                                    <span class="bg-white/10 px-2 py-1 rounded text-white font-mono text-xs w-12 text-center">$N$</span>
+                                    <p class="text-gray-400 leading-tight">The <strong>total number</strong> of observations in the entire dataset.</p>
+                                </div>
+                                <div class="flex gap-4 items-start group">
+                                    <span class="bg-white/10 px-2 py-1 rounded text-white font-mono text-xs w-12 text-center">$n_j$</span>
+                                    <p class="text-gray-400 leading-tight">The number of observations within specific group $j$.</p>
+                                </div>
+                            </div>
+
+                            <!-- Right Column: Mean Definitions -->
+                            <div class="space-y-4">
+                                <div class="flex gap-4 items-start group">
+                                    <span class="bg-accent/20 px-2 py-1 rounded text-accent font-mono text-xs w-12 text-center">$\\bar{Y}_{..}$</span>
+                                    <div>
+                                        <p class="text-white font-bold text-xs uppercase mb-1">Overall Mean</p>
+                                        <p class="text-gray-400 leading-tight">The average of <em>all</em> observations across <em>all</em> groups.</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-4 items-start group">
+                                    <span class="bg-accent/20 px-2 py-1 rounded text-accent font-mono text-xs w-12 text-center">$\\bar{Y}_j$</span>
+                                    <div>
+                                        <p class="text-white font-bold text-xs uppercase mb-1">Group Mean</p>
+                                        <p class="text-gray-400 leading-tight">The mean of observations specifically in the $j^{th}$ group.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Technical Concept Note -->
+                    <div class="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg text-center">
+                        <p class="text-xs text-blue-200">
+                            <strong>Note:</strong> $t$ represents the number of groups (treatments). The identity proves that the total variation from the grand mean can be split into <strong>Treatment effect</strong> and <strong>Random error</strong>.
+                        </p>
+                    </div>
+                </div>
+
+<!-- VISUAL PARTITIONING DIAGRAM (Slide 7 - Expanded Axis Version) -->
+<section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+    <h4 class="text-center text-xs font-bold uppercase tracking-widest text-white/40 mb-6">Visual Decomposition of Variance</h4>
+    
+    <div class="flex flex-col items-center">
+        <!-- Expanded SVG Graph -->
+        <div class="relative w-full max-w-2xl bg-white/5 p-4 rounded-lg">
+            <svg viewBox="0 -20 500 300" class="w-full h-auto overflow-visible">
+                <!-- Grid Lines (Horizontal Background) -->
+                <line x1="60" y1="240" x2="400" y2="240" stroke="white" opacity="0.05" stroke-width="0.5" />
+                <line x1="60" y1="180" x2="400" y2="180" stroke="white" opacity="0.05" stroke-width="0.5" />
+                <line x1="60" y1="120" x2="400" y2="120" stroke="white" opacity="0.05" stroke-width="0.5" />
+                <line x1="60" y1="60" x2="400" y2="60" stroke="white" opacity="0.05" stroke-width="0.5" />
+                <line x1="60" y1="0" x2="400" y2="0" stroke="white" opacity="0.05" stroke-width="0.5" />
+                
+                <!-- Grand Mean Line (Y..) -->
+                <line x1="60" y1="135" x2="400" y2="135" stroke="white" stroke-dasharray="6" stroke-width="2" opacity="0.8" />
+                <text x="55" y="139" fill="white" font-size="12" text-anchor="end" font-weight="black">Ȳ..</text>
+
+                <!-- Axes -->
+                <line x1="60" y1="260" x2="420" y2="260" stroke="white" stroke-width="1.5" /> <!-- X axis -->
+                <line x1="60" y1="260" x2="60" y2="-10" stroke="white" stroke-width="1.5" /> <!-- Y axis -->
+                
+                <!-- Axis Tick Labels -->
+                <g font-size="10" fill="white" opacity="0.5" text-anchor="end">
+                    <text x="55" y="263">0</text>
+                    <text x="55" y="140">10</text>
+                    <text x="55" y="15">20</text>
+                </g>
+
+                <!-- X-Axis Labels -->
+                <text x="110" y="280" fill="white" font-size="11" text-anchor="middle" font-weight="bold">A</text>
+                <text x="230" y="280" fill="white" font-size="11" text-anchor="middle" font-weight="bold">B</text>
+                <text x="350" y="280" fill="white" font-size="11" text-anchor="middle" font-weight="bold">C</text>
+                <text x="230" y="305" fill="white" font-size="12" text-anchor="middle" font-weight="black" opacity="0.7">Treatment</text>
+                
+                <!-- Y-Axis Label -->
+                <text x="20" y="125" fill="white" font-size="12" text-anchor="middle" font-weight="black" transform="rotate(-90, 20, 125)">y</text>
+
+                <!-- GROUP A (Red Circles) -->
+                <circle cx="110" cy="245" r="4.5" fill="#ef4444" />
+                <circle cx="110" cy="235" r="4.5" fill="#ef4444" />
+                <circle cx="110" cy="200" r="4.5" fill="#ef4444" />
+                <!-- Mean Marker (X) for A -->
+                <g stroke="#ef4444" stroke-width="2.5">
+                    <line x1="103" y1="220" x2="117" y2="234" />
+                    <line x1="117" y1="220" x2="103" y2="234" />
+                </g>
+                <text x="125" y="232" fill="#ef4444" font-size="12" font-weight="black">Ȳ₁</text>
+
+                <!-- GROUP B (Green Triangles) -->
+                <path d="M 230 10 L 238 24 L 222 24 Z" fill="#22c55e" />
+                <path d="M 230 50 L 238 64 L 222 64 Z" fill="#22c55e" />
+                <path d="M 230 85 L 238 99 L 222 99 Z" fill="#22c55e" />
+                <!-- Mean Marker (X) for B -->
+                <g stroke="#22c55e" stroke-width="2.5">
+                    <line x1="223" y1="35" x2="237" y2="49" />
+                    <line x1="237" y1="35" x2="223" y2="49" />
+                </g>
+                <text x="245" y="47" fill="#22c55e" font-size="12" font-weight="black">Ȳ₂</text>
+
+                <!-- GROUP C (Blue Squares) -->
+                <rect x="345" y="150" width="10" height="10" fill="#3b82f6" />
+                <rect x="345" y="180" width="10" height="10" fill="#3b82f6" />
+                <rect x="345" y="110" width="10" height="10" fill="#3b82f6" />
+                <rect x="345" y="80" width="10" height="10" fill="#3b82f6" />
+                <!-- Mean Marker (X) for C -->
+                <g stroke="#3b82f6" stroke-width="2.5">
+                    <line x1="343" y1="130" x2="357" y2="144" />
+                    <line x1="357" y1="130" x2="343" y2="144" />
+                </g>
+                <text x="365" y="142" fill="#3b82f6" font-size="12" font-weight="black">Ȳ₃</text>
+
+                <!-- LEGEND (Moved to the far right for visibility) -->
+                <g transform="translate(425, 50)">
+                    <rect x="-5" y="-20" width="75" height="90" fill="black" fill-opacity="0.3" rx="5" />
+                    <text x="32" y="0" fill="white" font-size="11" font-weight="black" text-anchor="middle">Treatment</text>
+                    <circle cx="10" cy="20" r="4" fill="#ef4444" /> 
+                    <text x="25" y="24" fill="white" font-size="10">A</text>
+                    <path d="M 10 35 L 15 45 L 5 45 Z" fill="#22c55e" /> 
+                    <text x="25" y="44" fill="white" font-size="10">B</text>
+                    <rect x="5" y="55" width="9" height="9" fill="#3b82f6" /> 
+                    <text x="25" y="64" fill="white" font-size="10">C</text>
+                </g>
+            </svg>
+        </div>
+
+        <!-- Identity Logic Summary -->
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+             <div class="p-3 bg-blue-500/10 border border-blue-500/20 rounded text-xs text-blue-200 italic">
+                <strong>Between Groups (SSTR):</strong> The distance from the Group Means (X markers) to the Grand Mean (dashed line).
+            </div>
+            <div class="p-3 bg-green-500/10 border border-green-500/20 rounded text-xs text-green-200 italic">
+                <strong>Within Groups (SSE):</strong> The distance from the individual data points to their own Group Means (X markers).
+            </div>
+        </div>
+    </div>
+</section>
+
+
+            `
+        },
+
+'anova-math': {
+    title: 'ANOVA Mathematical Notation',
+    html: `
+        <div class="space-y-8">
+            <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                <h4 class="text-accent font-bold mb-4">Calculations (Slide 6)</h4>
+                <div class="space-y-6 overflow-x-auto text-sm">
+                    <div class="bg-black/20 p-4 rounded">
+                        <p class="text-xs opacity-50 mb-2">Total Sum of Squares ($SST$):</p>
+                        $$\\sum_{j=1}^{t} \\sum_{i=1}^{n_j} (Y_{ij} - \\bar{Y}_{..})^2$$
+                    </div>
+                    <div class="bg-black/20 p-4 rounded">
+                        <p class="text-xs opacity-50 mb-2">Between Treatment ($SSTR$):</p>
+                        $$\\sum_{j=1}^{t} n_j (\\bar{Y}_j - \\bar{Y}_{..})^2$$
+                    </div>
+                    <div class="bg-black/20 p-4 rounded">
+                        <p class="text-xs opacity-50 mb-2">Within Treatment ($SSE$):</p>
+                        $$\\sum_{j=1}^{t} \\sum_{i=1}^{n_j} (Y_{ij} - \\bar{Y}_j)^2$$
+                    </div>
+                </div>
+                <div class="mt-4 grid grid-cols-2 gap-4 text-[10px] text-gray-400 font-mono">
+                    <p>$\\bar{Y}_{..}$: Grand Mean</p>
+                    <p>$\\bar{Y}_j$: Group Mean</p>
+                    <p>$t$: Num. Groups</p>
+                    <p>$n_j$: Obs in Group $j$</p>
+                </div>
+            </section>
+        </div>
+    `
+},
+
+'anova-table': {
+            title: 'The ANOVA Table & Decision Rules',
+            html: `
+                <div class="space-y-10">
+                    <!-- 1. THE ANOVA TABLE (Slide 8) -->
+                    <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                        <h4 class="text-accent font-bold mb-6 uppercase text-xs tracking-widest border-b border-white/10 pb-2">ANOVA Table Construction</h4>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-[11px] md:text-xs border-collapse bg-black/20 rounded-lg overflow-hidden">
+                                <thead class="bg-white/10 text-white font-bold uppercase">
+                                    <tr>
+                                        <th class="p-4 border-r border-white/5">Source of Variation</th>
+                                        <th class="p-4 border-r border-white/5">Sum Squares (SS)</th>
+                                        <th class="p-4 border-r border-white/5">Degrees of Freedom (df)</th>
+                                        <th class="p-4">Mean Squares (MS)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-300 font-mono">
+                                    <!-- BETWEEN -->
+                                    <tr class="border-b border-white/5 bg-blue-500/5">
+                                        <td class="p-4 font-bold text-blue-300 italic">Between Treatments <br><span class="text-[9px] font-normal opacity-60">(Explained)</span></td>
+                                        <td class="p-4">$$\\sum_{j=1}^{t} n_j (\\bar{Y}_j - \\bar{Y}_{..})^2$$</td>
+                                        <td class="p-4 text-center">$t - 1$</td>
+                                        <td class="p-4">$$MSTR = s^2_{between}$$</td>
+                                    </tr>
+                                    <!-- WITHIN -->
+                                    <tr class="border-b border-white/5 bg-red-500/5">
+                                        <td class="p-4 font-bold text-red-300 italic">Within Treatments <br><span class="text-[9px] font-normal opacity-60">(Unexplained)</span></td>
+                                        <td class="p-4">$$\\sum_{j=1}^{t} \\sum_{i=1}^{n_j} (Y_{ij} - \\bar{Y}_j)^2$$</td>
+                                        <td class="p-4 text-center">$n - t$</td>
+                                        <td class="p-4">$$MSE = s^2_{within}$$</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- 2. THE F-STATISTIC CALCULATION (Slide 8) -->
+                    <section class="bg-white/5 p-8 rounded-2xl border border-white/10 shadow-xl text-center">
+                        <h4 class="text-xs font-bold text-white/40 uppercase mb-6 tracking-widest">The F-Test Statistic</h4>
+                        
+                        <div class="bg-black/40 p-6 rounded-xl border border-white/5 inline-block">
+                            <div class="text-lg md:text-2xl text-white">
+                                $$F = \\frac{SSTR / (t-1)}{SSE / (n-t)} = \\frac{MSTR}{MSE} = \\frac{s^2_{between}}{s^2_{within}} \\sim F_{(t-1), (n-t)}$$
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 text-[10px] text-gray-500 italic">
+                            The calculated F-value follows an F-distribution with $(t-1)$ and $(n-t)$ degrees of freedom.
+                        </div>
+                    </section>
+
+                    <!-- 3. THE DECISION RULE (Slide 8 - RED TEXT) -->
+                    <section class="bg-red-500/10 border-2 border-red-500/30 p-6 rounded-2xl shadow-2xl relative overflow-hidden">
+                        <!-- Background pulse for emphasis -->
+                        <div class="absolute inset-0 bg-red-500/5 animate-pulse"></div>
+                        
+                        <div class="relative z-10">
+                            <h4 class="text-red-400 font-black text-sm uppercase mb-4 tracking-tighter flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                                Statistical Decision Rule
+                            </h4>
+                            
+                            <div class="text-lg md:text-xl font-bold text-white leading-relaxed">
+                                Accept the null hypothesis ($H_0$) if:
+                                <div class="mt-4 p-4 bg-black/60 rounded-xl font-mono border border-red-500/20 text-red-400">
+                                    $F(\\text{calculated}) < F_{\\alpha, (t-1), (n-t)}$ 
+                                    <br> <span class="text-white font-sans text-sm block my-2">-- OR --</span>
+                                    $p\\text{-value } (F \\text{ calculated}) > \\alpha$
+                                </div>
+                            </div>
+                            
+                            <p class="text-[10px] text-red-300/60 mt-4 uppercase font-black tracking-widest italic">
+                                Note: In most cases, we focus on rejecting $H_0$ when $p < \\alpha$.
+                            </p>
+                        </div>
+                    </section>
+                </div>
+            `
+        },
+
+'anova-types': {
+    title: 'Types of ANOVA',
+    html: `
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white/5 p-5 rounded-xl border border-white/10 shadow-lg group hover:border-accent transition-all">
+                <h4 class="text-accent font-bold mb-3">One-Factor ANOVA</h4>
+                <p class="text-[11px] text-gray-400">Contains <strong>one categorical</strong> independent variable to account for $SST$.</p>
+            </div>
+
+            <div class="bg-white/5 p-5 rounded-xl border border-white/10 shadow-lg group hover:border-accent transition-all">
+                <h4 class="text-accent font-bold mb-3">Two-Factor ANOVA</h4>
+                <p class="text-[11px] text-gray-400">Contains <strong>two categorical</strong> independent variables to account for $SST$.</p>
+            </div>
+
+            <div class="bg-white/5 p-5 rounded-xl border border-white/10 shadow-lg group hover:border-accent transition-all">
+                <h4 class="text-accent font-bold mb-3">ANCOVA</h4>
+                <p class="text-[11px] text-gray-400">Contains <strong>categorical</strong> AND <strong>numeric</strong> predictors (Covariates).</p>
+            </div>
+        </div>
+    `
 }
+
         
     }
 };
