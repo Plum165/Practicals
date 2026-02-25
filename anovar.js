@@ -33,9 +33,16 @@ export const anvoaModule = {
     //Slide deck ANOVA Part 2
     { id: 'anova-ex1-setup', title: '19. Ex 1: Foster Rats (Setup)' },
     { id: 'anova-ex1-math', title: '20. Ex 1: Partitioning Sum of Squares' },
-    { id: 'anova-ex1-r', title: '21. Ex 1: R Output & Interpretation' },
-    { id: 'anova-posthoc', title: '22. Post-hoc: Scheffé’s Method' },
-    { id: 'anova-ex1-posthoc', title: '23. Ex 1: Pairwise Comparisons' }
+    { id: 'anova-ex1-theory', title: '21. SST & ANOVA Terminology' },
+    { id: 'anova-ex1-data-full', title: '22. Ex 1: Observations by Group' },
+{ id: 'anova-ex1-hypo', title: '23. Ex 1: Formal Hypotheses' },
+    { id: 'anova-ex1-r', title: '24. Ex 1: R Output & Interpretation' },
+    { id: 'anova-ex1-notation', title: '25. Ex 1: Notation & Group Means' },
+{ id: 'anova-ex1-ss-calc', title: '26. Ex 1: Sum of Squares & R²' },
+{ id: 'anova-ex1-ms-f', title: '27. Ex 1: Mean Squares & F-test' },
+{ id: 'anova-ex1-decision', title: '28. Ex 1: Final Statistical Decision' },
+    { id: 'anova-posthoc', title: '29. Post-hoc: Scheffé’s Method' },
+    { id: 'anova-ex1-posthoc', title: '30. Ex 1: Pairwise Comparisons' }
 
 ],
     content: {
@@ -1562,6 +1569,665 @@ export const anvoaModule = {
                 <h4 class="text-accent font-bold mb-3">ANCOVA</h4>
                 <p class="text-[11px] text-gray-400">Contains <strong>categorical</strong> AND <strong>numeric</strong> predictors (Covariates).</p>
             </div>
+        </div>
+    `
+},
+'anova-ex1-setup': {
+    title: 'Example 1: Foster Rats Study',
+    html: `
+        <div class="space-y-8">
+            <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">CASE STUDY</span>
+                    <h3 class="text-xl font-bold text-accent">Genetic Fostering Component</h3>
+                </div>
+                <p class="text-sm text-gray-300 leading-relaxed mb-6">
+                    Investigating if a mother rat's genetic makeup affects the final weight of foster child rats. 
+                    <strong>Success = Heavier child rats.</strong>
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-black/30 p-4 rounded-lg border border-white/5">
+                        <h4 class="text-xs font-bold text-white uppercase mb-2">Variables</h4>
+                        <ul class="text-xs space-y-2 text-gray-400">
+                            <li><strong class="text-accent">Y (Dependent):</strong> Final weight of foster child (grams)</li>
+                            <li><strong class="text-accent">Treatment (X):</strong> Mother's Genotype (Types A, B, and J)</li>
+                            <li><strong class="text-accent">n:</strong> 36 foster pairs</li>
+                        </ul>
+                    </div>
+                    <div class="bg-black/30 p-4 rounded-lg border border-white/5">
+                        <h4 class="text-xs font-bold text-white uppercase mb-2">Hypotheses</h4>
+                        <div class="text-[11px] font-mono space-y-2">
+                            <p>$H_0: \\mu_A = \\mu_B = \\mu_J$</p>
+                            <p class="opacity-50 italic">(Weights are the same across all genotypes)</p>
+                            <p>$H_1: \\text{At least one } \\mu_j \\text{ differs}$</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="space-y-6">
+            <p class="text-sm text-gray-300 leading-relaxed">
+                The dataset consists of 36 foster mother-foster child pairs. Below is a subset of the recorded observations.
+            </p>
+
+            <div class="bg-white/5 p-4 rounded-xl border border-white/10 shadow-lg">
+                <div class="overflow-x-auto overflow-y-auto max-h-[500px] scrollbar-thin">
+                    <table class="w-full text-left text-[11px] font-mono border-collapse">
+                        <thead class="sticky top-0 bg-black/80 backdrop-blur text-accent uppercase font-bold border-b border-white/20">
+                            <tr>
+                                <th class="p-3">Case</th>
+                                <th class="p-3">Litter</th>
+                                <th class="p-3">Mother</th>
+                                <th class="p-3">AgeM</th>
+                                <th class="p-3">WeightC</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-400">
+                            <tr class="border-b border-white/5"><td class="p-2">1</td><td class="p-2">A</td><td class="p-2 text-white">A</td><td class="p-2">47.3</td><td class="p-2 text-accent">61.5</td></tr>
+                            <tr class="border-b border-white/5"><td class="p-2">2</td><td class="p-2">A</td><td class="p-2 text-white">A</td><td class="p-2">40</td><td class="p-2 text-accent">68.2</td></tr>
+                            <tr class="border-b border-white/5 bg-white/5"><td class="p-2">3</td><td class="p-2">A</td><td class="p-2 text-white">A</td><td class="p-2">23.4</td><td class="p-2 text-accent font-bold">64.0</td></tr>
+                            <tr class="border-b border-white/5"><td class="p-2">4</td><td class="p-2">A</td><td class="p-2 text-white">A</td><td class="p-2">63.8</td><td class="p-2 text-accent">65.0</td></tr>
+                            <tr class="border-b border-white/5"><td class="p-2">5</td><td class="p-2">A</td><td class="p-2 text-white">A</td><td class="p-2">21.5</td><td class="p-2 text-accent">59.7</td></tr>
+                            <tr class="border-b border-white/5"><td class="p-2">6</td><td class="p-2">B</td><td class="p-2 text-white">A</td><td class="p-2">51.1</td><td class="p-2 text-accent">60.3</td></tr>
+                            <tr class="border-b border-white/5"><td class="p-2">7</td><td class="p-2">B</td><td class="p-2 text-white">A</td><td class="p-2">18.4</td><td class="p-2 text-accent">51.7</td></tr>
+                            <tr class="border-b border-white/5"><td class="p-2">8</td><td class="p-2">B</td><td class="p-2 text-white">A</td><td class="p-2">57.1</td><td class="p-2 text-accent">49.3</td></tr>
+                            <tr class="border-b border-white/5"><td class="p-2">9</td><td class="p-2">B</td><td class="p-2 text-white">A</td><td class="p-2">28.7</td><td class="p-2 text-accent">48.0</td></tr>
+                            <tr class="border-b border-white/5"><td class="p-2">10</td><td class="p-2">J</td><td class="p-2 text-white">A</td><td class="p-2">34.0</td><td class="p-2 text-accent">59.0</td></tr>
+                            <tr class="border-b border-white/5"><td class="p-2">11</td><td class="p-2">J</td><td class="p-2 text-white">A</td><td class="p-2">28.3</td><td class="p-2 text-accent">57.4</td></tr>
+                            <tr class="border-b border-white/5"><td class="p-2">12</td><td class="p-2">J</td><td class="p-2 text-white">A</td><td class="p-2">41.1</td><td class="p-2 text-accent">54.0</td></tr>
+                            <tr class="border-b border-white/10 bg-white/5"><td class="p-2 italic">...</td><td class="p-2 italic">...</td><td class="p-2 italic">...</td><td class="p-2 italic">...</td><td class="p-2 italic">...</td></tr>
+                            <tr class="border-b border-white/5"><td class="p-2">30</td><td class="p-2">B</td><td class="p-2 text-white">J</td><td class="p-2">35.6</td><td class="p-2 text-accent">51.3</td></tr>
+                            <tr class="border-b border-white/5"><td class="p-2">31</td><td class="p-2">B</td><td class="p-2 text-white">J</td><td class="p-2">63.7</td><td class="p-2 text-accent">40.5</td></tr>
+                            <tr class="border-b border-white/5"><td class="p-2">32</td><td class="p-2">J</td><td class="p-2 text-white">J</td><td class="p-2">6.3</td><td class="p-2 text-accent">44.8</td></tr>
+                            <tr class="border-b border-white/5"><td class="p-2">33</td><td class="p-2">J</td><td class="p-2 text-white">J</td><td class="p-2">27.7</td><td class="p-2 text-accent">51.5</td></tr>
+                            <tr class="border-b border-white/5"><td class="p-2">34</td><td class="p-2">J</td><td class="p-2 text-white">J</td><td class="p-2">50.7</td><td class="p-2 text-accent">53.0</td></tr>
+                            <tr class="border-b border-white/5"><td class="p-2">35</td><td class="p-2">J</td><td class="p-2 text-white">J</td><td class="p-2">20.7</td><td class="p-2 text-accent">42.0</td></tr>
+                            <tr class="border-b border-white/5"><td class="p-2">36</td><td class="p-2">J</td><td class="p-2 text-white">J</td><td class="p-2">45.8</td><td class="p-2 text-accent">54.0</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-3 bg-blue-500/10 border border-blue-500/20 rounded text-xs text-blue-200">
+                    <strong>Treatment:</strong> The Mother's genotype (A, B, or J).
+                </div>
+                <div class="p-3 bg-accent/10 border border-accent/20 rounded text-xs text-accent">
+                    <strong>Response (Y):</strong> WeightC (Child's weight in grams).
+                </div>
+            </div>
+        </div>
+
+            <section class="bg-white/5 p-6 rounded-xl border border-white/10">
+                <h4 class="text-accent font-bold mb-4 uppercase text-xs">The Grand Mean (Slide 6)</h4>
+                <p class="text-sm text-gray-300 mb-4">First, we calculate the average weight of all 36 rats:</p>
+                <div class="bg-black/40 p-4 rounded-lg text-center">
+                    $$\\bar{Y}_{..} = \\frac{1}{36} (61.5 + 68.2 + \\dots + 54) = 54.325 \\text{ grams}$$
+                </div>
+            </section>
+        </div>
+    `
+},
+
+'anova-ex1-math': {
+    title: 'Worked Calculations: Sum of Squares',
+    html: `
+        <div class="space-y-10">
+            <!-- SSTR Calculation -->
+            <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                <h4 class="text-green-400 font-bold mb-4 uppercase text-xs">Between Treatment (SSTR)</h4>
+                <div class="text-xs text-gray-300 space-y-4">
+                    <p>Measures how much variation is caused by the Mother's genotype:</p>
+                    <div class="bg-black/40 p-4 rounded font-mono">
+                        $SSTR = 13(57.31 - 54.325)^2 + 11(57.15 - 54.325)^2 + 12(48.49 - 54.325)^2$
+                        <br><span class="text-accent text-lg">$SSTR = 612.65$</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SSE & R-Squared -->
+            <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                <h4 class="text-red-400 font-bold mb-4 uppercase text-xs">Within Treatment / Error (SSE)</h4>
+                <div class="text-xs text-gray-300 space-y-4">
+                    <p>Measures natural variation within the same genotype groups:</p>
+                    <div class="bg-black/40 p-4 rounded font-mono">
+                        $SSE = 1510.35$
+                    </div>
+                    
+                    <div class="bg-blue-500/10 p-4 rounded-lg border border-blue-500/30">
+                        <h5 class="text-blue-300 font-bold text-xs uppercase mb-2">The Determination Coefficient ($R^2$)</h5>
+                        <p class="text-lg">$$R^2 = \\frac{SSTR}{SST} = \\frac{612.65}{2123} = 29\%$$</p>
+                        <p class="mt-2 opacity-70 italic">"29% of variation in rat weight is explained by the mother's genotype. 71% remains unexplained."</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    `
+},
+
+'anova-ex1-r': {
+    title: 'R Output & F-test Decision',
+    html: `
+        <div class="space-y-8">
+            <div class="bg-black/60 p-6 rounded-xl border border-white/10 font-mono text-[11px] overflow-x-auto shadow-2xl">
+                <p class="text-cyan-400 mb-2">> summary(aov(WeightC ~ Mother, data=FosterRats))</p>
+                <table class="w-full text-left mt-4">
+                    <thead>
+                        <tr class="text-white border-b border-white/10">
+                            <th class="py-1">Source</th><th class="py-1">Df</th><th class="py-1">Sum Sq</th><th class="py-1">Mean Sq</th><th class="py-1">F value</th><th class="py-1">Pr(>F)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-400">
+                        <tr><td>Mother</td><td>2</td><td>612.7</td><td>306.33</td><td class="text-white">6.694</td><td class="text-accent">0.00363 **</td></tr>
+                        <tr><td>Residuals</td><td>33</td><td>1510.1</td><td>45.76</td><td></td><td></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                <h4 class="text-accent font-bold mb-4 uppercase text-xs">Conclusion</h4>
+                <div class="space-y-4 text-sm text-gray-300 leading-relaxed">
+                    <p>The calculated F-value (<strong class="text-white">6.49</strong>) is greater than the critical value (<strong class="text-white">3.29</strong>).</p>
+                    <div class="p-4 bg-green-500/10 border-l-4 border-green-500 rounded">
+                        <strong>Decision: Reject $H_0$.</strong> At least one genotype group mean differs from the rest. 
+                        Genetic types of rats <em>do</em> make better foster mothers than others.
+                    </div>
+                </div>
+            </section>
+        </div>
+    `
+},
+
+'anova-posthoc': {
+    title: 'Scheffé’s Method for Multiple Comparisons',
+    html: `
+        <div class="space-y-8">
+            <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                <h4 class="text-accent font-bold mb-4">Why use Post-hoc tests?</h4>
+                <p class="text-sm text-gray-300 leading-relaxed">
+                    The F-test only tells us that "at least one" group is different. It does <strong>not</strong> tell us <em>which</em> groups are better. Post-hoc tests perform pairwise comparisons.
+                </p>
+            </section>
+
+            <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                <h4 class="text-accent font-bold mb-6 text-center">Scheffé’s Critical Range Formula</h4>
+                <div class="bg-black/40 p-6 rounded-2xl text-center">
+                    <div class="text-lg md:text-xl text-white">
+                        $$\\text{Critical Range} = \\sqrt{(t - 1)F_{\\alpha(t-1; N-t)}} \\sqrt{\\left(\\frac{1}{n_1} + \\frac{1}{n_2}\\right) MSE}$$
+                    </div>
+                </div>
+                
+                <div class="mt-8 space-y-4 text-sm">
+                    <div class="flex items-start gap-3">
+                        <span class="bg-accent text-black font-bold px-2 py-0.5 rounded text-[10px]">1</span>
+                        <p><strong>Contrast:</strong> Calculate the absolute difference between two means $|\\bar{Y}_1 - \\bar{Y}_2|$.</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="bg-accent text-black font-bold px-2 py-0.5 rounded text-[10px]">2</span>
+                        <p><strong>Compare:</strong> If the Contrast $>$ Critical Range, the two groups differ significantly.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    `
+},
+'anova-ex1-posthoc': {
+            title: 'Ex 1: Pairwise Comparisons (Scheffé’s Method)',
+            html: `
+                <div class="space-y-10">
+                    <!-- 1. COMPARISON A vs B (Slide 18) -->
+                    <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="bg-gray-500 text-white text-xs font-bold px-2 py-1 rounded">PAIR 1</span>
+                            <h4 class="text-xl font-bold text-white">Mother Genotype A vs. Mother Genotype B</h4>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-4">
+                                <p class="text-[10px] text-accent uppercase font-bold tracking-widest">Mathematical Proof</p>
+                                <div class="bg-black/40 p-4 rounded-lg text-sm font-mono leading-relaxed">
+                                    $$\\text{Crit. Range} = \\sqrt{2 \\times 3.28} \\sqrt{\\left(\\frac{1}{13} + \\frac{1}{11}\\right) 47.198} = 7.10$$
+                                    <div class="h-px bg-white/10 my-3"></div>
+                                    $$\\text{Contrast} = |57.31 - 57.15| = 0.16$$
+                                </div>
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <div class="p-4 bg-red-500/10 border-l-4 border-red-500 rounded text-sm text-gray-300">
+                                    <p class="font-bold text-red-400">Result: Not Significant</p>
+                                    <p class="mt-2 italic">"Since the contrast (0.16) does not exceed the critical range (7.10), these group means do not differ significantly at the 5% level."</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 2. COMPARISON A vs J (Slide 19) -->
+                    <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">PAIR 2</span>
+                            <h4 class="text-xl font-bold text-white">Mother Genotype A vs. Mother Genotype J</h4>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-4">
+                                <p class="text-[10px] text-accent uppercase font-bold tracking-widest">Mathematical Proof</p>
+                                <div class="bg-black/40 p-4 rounded-lg text-sm font-mono leading-relaxed">
+                                    $$\\text{Crit. Range} = \\sqrt{2 \\times 3.29} \\sqrt{\\left(\\frac{1}{13} + \\frac{1}{12}\\right) 47.198} = 7.05$$
+                                    <div class="h-px bg-white/10 my-3"></div>
+                                    $$\\text{Contrast} = |57.31 - 48.49| = 8.82$$
+                                </div>
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <div class="p-4 bg-green-500/10 border-l-4 border-green-500 rounded text-sm text-gray-300">
+                                    <p class="font-bold text-green-400">Result: Highly Significant (1%)</p>
+                                    <p class="mt-2 italic">"Since the contrast (8.82) exceeds the critical range (7.05), these group means differ significantly."</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 3. COMPARISON B vs J (Slide 20) -->
+                    <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">PAIR 3</span>
+                            <h4 class="text-xl font-bold text-white">Mother Genotype B vs. Mother Genotype J</h4>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-4">
+                                <p class="text-[10px] text-accent uppercase font-bold tracking-widest">Mathematical Proof</p>
+                                <div class="bg-black/40 p-4 rounded-lg text-sm font-mono leading-relaxed">
+                                    $$\\text{Crit. Range} = \\sqrt{2 \\times 3.29} \\sqrt{\\left(\\frac{1}{12} + \\frac{1}{11}\\right) 47.198} = 7.36$$
+                                    <div class="h-px bg-white/10 my-3"></div>
+                                    $$\\text{Contrast} = |57.15 - 48.49| = 8.66$$
+                                </div>
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <div class="p-4 bg-green-500/10 border-l-4 border-green-500 rounded text-sm text-gray-300">
+                                    <p class="font-bold text-green-400">Result: Highly Significant (1%)</p>
+                                    <p class="mt-2 italic">"Since the contrast (8.66) exceeds the critical range (7.36), these group means differ significantly."</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 4. FINAL BIOLOGICAL CONCLUSION (Slide 20) -->
+                    <section class="bg-blue-900/20 p-8 rounded-2xl border border-blue-500/30 shadow-2xl relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-10">
+                            <svg class="w-24 h-24 text-blue-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h.01a1 1 0 100-2H10zm3 0a1 1 0 000 2h.01a1 1 0 100-2H13zM7 13a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h.01a1 1 0 100-2H10zm3 0a1 1 0 000 2h.01a1 1 0 100-2H13z" clip-rule="evenodd"></path></svg>
+                        </div>
+                        
+                        <h4 class="text-blue-300 font-black text-sm uppercase mb-4 tracking-widest flex items-center gap-2">
+                            <span class="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></span>
+                            Study Conclusion
+                        </h4>
+                        <div class="text-lg md:text-xl text-white font-bold leading-relaxed italic">
+                            "Simply put, we can conclude that rats with foster-mothers possessing <span class="text-accent underline decoration-accent/30">genotype A or B</span> grow to be significantly more healthy (heavier) than rats with foster-mothers possessing genotype J."
+                        </div>
+                    </section>
+                </div>
+            `
+        },
+'anova-ex1-theory': {
+    title: 'Example 1: Variability & ANOVA Terminology',
+    html: `
+        <div class="space-y-10">
+            
+            <!-- 1. WHAT CAUSES VARIATION? (Slide 6-7) -->
+            <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">SLIDE 7</span>
+                    <h3 class="text-xl font-bold text-accent">Variation in Child Rat Weights</h3>
+                </div>
+                
+                <p class="text-sm text-gray-300 leading-relaxed mb-6">
+                    What makes some child rats heavy and some light? To answer this, we look at the <strong>Total Variability</strong> in the dependent variable.
+                </p>
+
+                <div class="bg-black/40 p-6 rounded-xl border border-white/5">
+                    <h4 class="text-xs font-bold text-white uppercase tracking-widest mb-4">SST vs. Sample Variance</h4>
+                    <p class="text-xs text-gray-400 mb-4">The formula for $SST$ is the numerator of the variance formula you learned in first year:</p>
+                    
+                    <div class="text-center py-4 bg-black/20 rounded-lg border border-white/5">
+                        <div class="text-lg md:text-xl">
+                            $$\\text{Sample Variance} = \\frac{1}{n-1} \\sum_{i=1}^{N} (x_i - \\bar{x})^2 = \\frac{SST}{n-1}$$
+                        </div>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-accent/10 border-l-4 border-accent rounded">
+                        <p class="text-xs text-gray-300">
+                            <strong>Degrees of Freedom:</strong> The quantity <span class="text-white font-mono font-bold">$n - 1$</span> is what we divide the $SST$ by to turn it into a true variance measure.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. TERMINOLOGY & INDEXING (Slide 8) -->
+            <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="bg-purple-600 text-white text-xs font-bold px-2 py-1 rounded">DEFINITIONS</span>
+                    <h3 class="text-xl font-bold text-accent">One-Factor ANOVA Setup</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Terminology -->
+                    <div class="space-y-4">
+                        <div class="p-4 bg-black/30 rounded-lg border border-white/5">
+                            <h5 class="text-white font-bold text-xs uppercase mb-1">Treatment Variable</h5>
+                            <p class="text-[11px] text-gray-400">The <strong>independent variable</strong> used to group the data. In our study: <span class="text-accent">Mother Rat's Genotype</span>.</p>
+                        </div>
+                        <div class="p-4 bg-black/30 rounded-lg border border-white/5">
+                            <h5 class="text-white font-bold text-xs uppercase mb-1">Treatments</h5>
+                            <p class="text-[11px] text-gray-400">The specific <strong>groups or levels</strong> of the treatment variable. Usually indexed by <span class="text-accent">$j = 1, 2, \dots, t$</span>.</p>
+                        </div>
+                    </div>
+
+                    <!-- Application -->
+                    <div class="bg-accent/5 p-5 rounded-xl border border-accent/20">
+                        <h4 class="text-xs font-bold text-white uppercase mb-4 tracking-widest">Application: Foster Rats</h4>
+                        <p class="text-xs text-gray-300 mb-4">We have <strong class="text-white">$t = 3$</strong> levels of genotype:</p>
+                        
+                        <div class="space-y-2 font-mono text-[11px]">
+                            <div class="flex justify-between p-2 bg-white/5 rounded">
+                                <span class="text-gray-400">Genotype A</span>
+                                <span class="text-accent">$j = 1$</span>
+                            </div>
+                            <div class="flex justify-between p-2 bg-white/5 rounded">
+                                <span class="text-gray-400">Genotype B</span>
+                                <span class="text-accent">$j = 2$</span>
+                            </div>
+                            <div class="flex justify-between p-2 bg-white/5 rounded">
+                                <span class="text-gray-400">Genotype J</span>
+                                <span class="text-accent">$j = 3$</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    `
+},
+'anova-ex1-data-full': {
+            title: 'Ex 1: Detailed Observations (by Mother)',
+            html: `
+                <div class="space-y-6">
+                    <p class="text-sm text-gray-300 leading-relaxed">
+                        To calculate the ANOVA, we organize the observations ($i$) under their respective treatment groups ($j$).
+                    </p>
+
+                    <div class="bg-white/5 p-4 rounded-xl border border-white/10 shadow-lg">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-center text-[11px] font-mono border-collapse">
+                                <thead>
+                                    <tr class="text-white/40 border-b border-white/20">
+                                        <th class="p-2 border-r border-white/10 italic">$i$</th>
+                                        <th class="p-2 bg-blue-500/10 text-blue-300">$j=1$ (Mother A)</th>
+                                        <th class="p-2 bg-green-500/10 text-green-300">$j=2$ (Mother B)</th>
+                                        <th class="p-2 bg-purple-500/10 text-purple-300">$j=3$ (Mother J)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-400">
+                                    <tr class="border-b border-white/5"><td>1</td><td>61.5</td><td>55.0</td><td>42.0</td></tr>
+                                    <tr class="border-b border-white/5"><td>2</td><td>68.2</td><td>42.0</td><td>54.0</td></tr>
+                                    <tr class="border-b border-white/5"><td>3</td><td>64.0</td><td>60.2</td><td>61.0</td></tr>
+                                    <tr class="border-b border-white/5"><td>4</td><td>65.0</td><td>50.8</td><td>48.2</td></tr>
+                                    <tr class="border-b border-white/5"><td>5</td><td>59.7</td><td>64.7</td><td>39.6</td></tr>
+                                    <tr class="border-b border-white/5"><td>6</td><td>60.3</td><td>61.7</td><td>51.3</td></tr>
+                                    <tr class="border-b border-white/5"><td>7</td><td>51.7</td><td>64.0</td><td>40.5</td></tr>
+                                    <tr class="border-b border-white/5"><td>8</td><td>49.3</td><td>62.0</td><td>44.8</td></tr>
+                                    <tr class="border-b border-white/5"><td>9</td><td>48.0</td><td>59.5</td><td>51.5</td></tr>
+                                    <tr class="border-b border-white/5"><td>10</td><td>59.0</td><td>52.8</td><td>53.0</td></tr>
+                                    <tr class="border-b border-white/5"><td>11</td><td>57.4</td><td>56.0</td><td>42.0</td></tr>
+                                    <tr class="border-b border-white/5"><td>12</td><td>54.0</td><td class="bg-white/5 opacity-20">-</td><td>54.0</td></tr>
+                                    <tr class="border-b border-white/10"><td>13</td><td>47.0</td><td class="bg-white/5 opacity-20">-</td><td class="bg-white/5 opacity-20">-</td></tr>
+                                </tbody>
+                                <tfoot class="font-bold text-white">
+                                    <tr class="bg-white/5">
+                                        <td class="p-2 border-r border-white/10">$n_j$</td>
+                                        <td class="p-2 text-blue-400">13</td>
+                                        <td class="p-2 text-green-400">11</td>
+                                        <td class="p-2 text-purple-400">12</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-gray-500 italic text-center">Total Sample Size ($n$) = 36</p>
+                </div>
+            `
+        },
+
+        'anova-ex1-hypo': {
+            title: 'Ex 1: Formal Hypotheses',
+            html: `
+                <div class="space-y-8">
+                    <!-- WORD STATEMENT -->
+                    <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">SLIDE 10</span>
+                            <h4 class="text-xl font-bold text-accent">Hypothesis Statements</h4>
+                        </div>
+                        
+                        <div class="space-y-6">
+                            <div class="relative pl-6 border-l-2 border-white/10">
+                                <span class="absolute top-0 left-[-9px] w-4 h-4 bg-black border border-white/20 rounded-full flex items-center justify-center text-[10px] text-white">0</span>
+                                <p class="text-sm font-bold text-white mb-1">Null Hypothesis ($H_0$):</p>
+                                <p class="text-xs text-gray-400">The average weight of rats is the <strong>same</strong> across all foster-mother genotype groups.</p>
+                            </div>
+
+                            <div class="relative pl-6 border-l-2 border-white/10">
+                                <span class="absolute top-0 left-[-9px] w-4 h-4 bg-black border border-white/20 rounded-full flex items-center justify-center text-[10px] text-white">1</span>
+                                <p class="text-sm font-bold text-white mb-1">Alternate Hypothesis ($H_1$):</p>
+                                <p class="text-xs text-gray-400">The average weight of rats <strong>differs</strong> in at least one of the foster-mother genotype groups.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- MATH NOTATION -->
+                    <section class="bg-black/40 p-8 rounded-2xl border border-white/10 text-center">
+                        <h4 class="text-xs font-bold text-white/40 uppercase mb-6 tracking-widest">Mathematical Notation</h4>
+                        <div class="space-y-6">
+                            <div>
+                                <p class="text-[10px] text-accent uppercase mb-2">Null</p>
+                                <div class="text-xl md:text-2xl text-white font-mono">
+                                    $$H_0 : \\mu_1 = \\mu_2 = \\mu_3$$
+                                </div>
+                            </div>
+                            <div class="w-12 h-px bg-white/10 mx-auto"></div>
+                            <div>
+                                <p class="text-[10px] text-accent uppercase mb-2">Alternate</p>
+                                <div class="text-xl md:text-2xl text-white font-mono">
+                                    $$H_1 : \\text{At least one } \\mu_j \\text{ differs}$$
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            `
+        },
+
+        'anova-ex1-notation': {
+    title: 'Ex 1: Group Notation & Means',
+    html: `
+        <div class="space-y-8">
+            <!-- NOTATION EXAMPLES (Slide 11) -->
+            <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                <h4 class="text-accent font-bold mb-4 uppercase text-xs">Individual Observation Notation</h4>
+                <p class="text-sm text-gray-300 mb-4">Recall the notation $Y_{ij}$ where $i$ is the observation and $j$ is the group:</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-black/40 p-3 rounded border border-white/5">
+                        <p class="text-[10px] text-white/40 mb-1">Group 1 (A)</p>
+                        <p class="text-xs font-mono">$Y_{31} = 64$</p>
+                        <p class="text-[9px] opacity-50 mt-1">3rd rat in Mother Type A</p>
+                    </div>
+                    <div class="bg-black/40 p-3 rounded border border-white/5">
+                        <p class="text-[10px] text-white/40 mb-1">Group 2 (B)</p>
+                        <p class="text-xs font-mono">$Y_{12} = 55$</p>
+                        <p class="text-[9px] opacity-50 mt-1">1st rat in Mother Type B</p>
+                    </div>
+                    <div class="bg-black/40 p-3 rounded border border-white/5">
+                        <p class="text-[10px] text-white/40 mb-1">Group 3 (J)</p>
+                        <p class="text-xs font-mono">$Y_{73} = 40.5$</p>
+                        <p class="text-[9px] opacity-50 mt-1">7th rat in Mother Type J</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- GROUP SUMMARY TABLE (From Screenshot) -->
+            <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                <h4 class="text-accent font-bold mb-4 uppercase text-xs">Treatment Group Summary</h4>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm border-collapse bg-black/20 rounded-lg">
+                        <thead class="bg-white/5 text-white/60">
+                            <tr>
+                                <th class="p-3 border-b border-white/10">$j$ (Group)</th>
+                                <th class="p-3 border-b border-white/10">$n_j$ (Size)</th>
+                                <th class="p-3 border-b border-white/10">$\\bar{Y}_j$ (Group Mean)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-300 font-mono">
+                            <tr class="border-b border-white/5">
+                                <td class="p-3">1 (A)</td><td class="p-3">13</td><td class="p-3 text-accent">57.31</td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="p-3">2 (B)</td><td class="p-3">11</td><td class="p-3 text-accent">57.15</td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="p-3">3 (J)</td><td class="p-3">12</td><td class="p-3 text-accent">48.49</td>
+                            </tr>
+                            <tr class="bg-white/5 font-bold text-white">
+                                <td class="p-3 uppercase">Total</td><td class="p-3">$n = 36$</td><td class="p-3">$\\bar{Y}_{..} = 54.325$</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    `
+},
+
+'anova-ex1-ss-calc': {
+    title: 'Ex 1: SSTR, SSE and R²',
+    html: `
+        <div class="space-y-10">
+            <!-- SSTR CALC -->
+            <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                <h4 class="text-green-400 font-bold mb-4 uppercase text-xs">Between Treatment SS (SSTR)</h4>
+                <div class="bg-black/40 p-5 rounded-lg overflow-x-auto">
+                    <div class="text-sm font-mono text-white mb-4">
+                        $SSTR = 13(57.31 - 54.325)^2 + 11(57.15 - 54.325)^2 + 12(48.49 - 54.325)^2$
+                    </div>
+                    <p class="text-right text-accent font-bold text-xl">$SSTR = 612.65$</p>
+                </div>
+            </section>
+
+            <!-- SSE CALC -->
+            <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                <h4 class="text-red-400 font-bold mb-4 uppercase text-xs">Within Treatment SS (SSE)</h4>
+                <p class="text-xs text-gray-400 mb-4 italic leading-relaxed">
+                    $SSE$ is the sum of squared distances of each rat weight from its <strong>own group mean</strong>.
+                </p>
+                <div class="bg-black/40 p-5 rounded-lg overflow-x-auto text-[10px] font-mono leading-loose">
+                    $SSE = (61.5-57.31)^2 + \\dots + (47-57.31)^2$ <span class="text-blue-400">(A)</span><br>
+                    $+ (55-57.15)^2 + \\dots + (56-57.15)^2$ <span class="text-green-400">(B)</span><br>
+                    $+ (42-48.49)^2 + \\dots + (54-48.49)^2$ <span class="text-purple-400">(J)</span>
+                    <p class="text-right text-accent font-bold text-xl mt-4">$SSE = 1510.35$</p>
+                </div>
+            </section>
+
+            <!-- R-SQUARED -->
+            <section class="bg-blue-500/10 p-6 rounded-xl border border-blue-500/30">
+                <h4 class="text-blue-300 font-bold mb-4 uppercase text-xs">The Determination Coefficient ($R^2$)</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                    <div class="text-center bg-black/40 p-4 rounded-lg border border-white/5">
+                        <div class="text-lg">$$R^2 = \\frac{612.65}{2123} \\approx 0.29$$</div>
+                    </div>
+                    <div class="text-sm text-gray-300">
+                        <p>We explained <strong>29%</strong> of the variation in weight using just the foster mother's genotype. <strong>71% remains unexplained.</strong></p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    `
+},
+
+'anova-ex1-ms-f': {
+    title: 'Ex 1: Adjusting for Degrees of Freedom',
+    html: `
+        <div class="space-y-10">
+            <!-- MEAN SQUARES -->
+            <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                <h4 class="text-accent font-bold mb-6 uppercase text-xs tracking-widest">Mean Squares Calculation</h4>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-black/30 p-4 rounded-lg border border-white/5">
+                        <p class="text-[10px] opacity-40 uppercase mb-2">Mean Square Treatments (MSTR)</p>
+                        <div class="text-sm">
+                            $$MSTR = \\frac{612.65}{3 - 1} = 306.125$$
+                        </div>
+                    </div>
+                    <div class="bg-black/30 p-4 rounded-lg border border-white/5">
+                        <p class="text-[10px] opacity-40 uppercase mb-2">Mean Square Error (MSE)</p>
+                        <div class="text-sm">
+                            $$MSE = \\frac{1510.35}{36 - 3} = 47.198$$
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- F-STATISTIC -->
+            <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                <h4 class="text-accent font-bold mb-4 uppercase text-xs">The F-Statistic Ratio</h4>
+                <p class="text-xs text-gray-400 mb-6">Taking the ratio of the two variance estimates:</p>
+                
+                <div class="bg-black/60 p-8 rounded-2xl text-center border border-accent/20">
+                    <div class="text-2xl font-mono text-white">
+                        $$F = \\frac{MSTR}{MSE} = \\frac{306.125}{47.198} = 6.49$$
+                    </div>
+                    <p class="text-[10px] text-accent mt-4 uppercase tracking-widest">Follows F-distribution with df (2, 33)</p>
+                </div>
+            </section>
+        </div>
+    `
+},
+
+'anova-ex1-decision': {
+    title: 'Ex 1: Final Statistical Conclusion',
+    html: `
+        <div class="space-y-8">
+            <section class="bg-white/5 p-6 rounded-xl border border-white/10 shadow-lg">
+                <h4 class="text-accent font-bold mb-6 uppercase text-xs tracking-widest">Hypothesis Test Comparison</h4>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="p-4 bg-black/40 rounded-lg border border-white/5 text-center">
+                        <p class="text-[10px] opacity-50 uppercase mb-2">Calculated F</p>
+                        <p class="text-3xl font-black text-white">6.49</p>
+                    </div>
+                    <div class="p-4 bg-black/40 rounded-lg border border-white/5 text-center">
+                        <p class="text-[10px] opacity-50 uppercase mb-2">Critical F (5% level)</p>
+                        <p class="text-3xl font-black text-accent">3.29</p>
+                    </div>
+                </div>
+
+                <div class="bg-red-500/10 border-2 border-red-500/30 p-6 rounded-2xl shadow-xl">
+                    <h5 class="text-red-400 font-bold mb-2 uppercase text-xs">Statistical Verdict</h5>
+                    <p class="text-lg text-white font-bold leading-tight">
+                        Since $F_{calc} (6.49) > F_{crit} (3.29)$, we <span class="underline decoration-red-500 text-red-400">Reject $H_0$</span>.
+                    </p>
+                    <p class="text-sm text-gray-400 mt-4 leading-relaxed italic">
+                        "At least one genotype group mean differs significantly from the rest."
+                    </p>
+                </div>
+            </section>
+
+            <section class="bg-blue-900/20 p-6 rounded-xl border border-blue-500/30 shadow-lg">
+                <h4 class="text-blue-300 font-bold mb-4 uppercase text-xs">Research Conclusion</h4>
+                <p class="text-sm text-gray-300 leading-relaxed italic">
+                    "This suggests that some genetic types of rats do make better foster-mothers than others. Fostering success is not purely random—it has a significant genetic component related to the mother's genotype."
+                </p>
+            </section>
         </div>
     `
 }
